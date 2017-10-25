@@ -1,5 +1,6 @@
 //  My First Rocket
-#include 'display_header.h' 
+#include "display_header.h" 
+#include "radio_functions.h"
 
 void setup() {
   // some code to start
@@ -25,25 +26,45 @@ void init_all() {
     dis(0,0,0,0,0);
   }
   // Okay radio initialized, tell ground that we are alive.
-  radio.send("Establishing comms");
+  rf95.send((uint8_t *)"Hello ground. AMI beginning initialisation.", 44);
   while(motor_init()){
     dis(1,0,0,0,0);
   }
+  rf95.send((uint8_t *)"Motor online.",14);
   while(altitude_init()){
     dis(1,1,0,0,0);
   }
+  rf95.send((uint8_t *)"Altitude online. Current altitude is: ",39);
   while(gps_init()){
     dis(1,1,1,0,0);
   }
+  rf95.send((uint8_t *)"GPS online. Current location is: ",34);
   while(accelometer_init()){
     dis(1,1,1,1,0);
   }
+  rf95.send((uint8_t *)"Accelometer online. Current velocity is: ",42);
   dis(1,1,1,1,1);
-  radio_send("Systems online");
+  rf95.send((uint8_t *)"All systems online. AMI handling control to ground.",52);
 }
 
 // This function displays the status of the rocket
 void dis(int radio, int motor,int alt, int gps, int acc){
   
+}
+
+// dummy functions
+bool motor_init(){
+  return true;
+}
+
+bool altitude_init(){
+  return true;
+}
+
+bool gps_init(){
+  return true;
+}
+bool accelometer_init(){
+  return true;
 }
 
