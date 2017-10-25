@@ -11,3 +11,4 @@ Electrica Mathematica
 1. Identify timing critical tasks are always done first.
 2. Ensure no lockups during flight.
 
+# Functions
