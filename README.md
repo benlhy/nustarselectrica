@@ -12,3 +12,6 @@ Electrica Mathematica
 2. Ensure no lockups during flight.
 
 # Functions
+
+
+joegleeson
