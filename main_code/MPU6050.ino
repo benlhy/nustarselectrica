@@ -1,24 +1,24 @@
-#include<MPU6050.h>
-int i = 0;
-MPU6050 gyro(100);
+#include "MPU6050.h"
+MPU6050 gyro;
 void setup() {
   // put your setup code here, to run once:
   gyro.init();
   Serial.begin(9600);
-  Serial.println("I'm alive!");
+  Serial.println(micros());
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  double x[3];
-  gyro.update();
-  gyro.pos(x);
-  i++;
-  if (i % 10 == 0) {
-    Serial.print("X: "); Serial.println(x[0]);
-    Serial.print("Y: "); Serial.println(x[1]);
-    Serial.print("Z: "); Serial.println(x[2]);
-    Serial.println();
-  }
+  //Serial.println("Hello");
+  gyro.update(micros());
+  double pos[3];
+  gyro.pos(pos);
+  
+  
+  Serial.print("x: "); Serial.println(pos[0]);
+  Serial.print("y: "); Serial.println(pos[1]);
+  Serial.print("z: "); Serial.println(pos[2]);
+  
+  
   delay(100);
 }
