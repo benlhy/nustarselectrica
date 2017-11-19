@@ -1,3 +1,8 @@
+#ifndef MPU6050_h
+#define MPU6050_h
+
+#include "Arduino.h"
+
 class MPU6050 {
 private:
     const double DEGCONV = 2000 / 32786.0;
@@ -11,3 +16,5 @@ public:
     void update(double rad_vel[], unsigned long);
     void pos(double pos[]);
 };
+
+#endif

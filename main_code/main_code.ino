@@ -1,10 +1,11 @@
 //  My First Rocket
 #include "display_header.h" 
 #include "radio_functions.h"
+#include "MPU6050/MPU6050.h"
 
 void setup() {
   // some code to start
-  init_all();
+  //init_all();
   //screen_huh(); // check if display is on or off
   //spin_parameters_huh(); // ask ground station if we want to set new spin parameters
   //motor_test_huh(); // do we want a motor test?

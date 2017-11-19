@@ -3,8 +3,8 @@
  */
 
 #include "MPU6050.h"
-#include<Wire.h>
-#include<Arduino.h>
+#include <Wire.h>
+#include <Arduino.h>
 
 /**
  * Start communication with the unit, set its sensitivities.
@@ -68,5 +68,3 @@ void MPU6050::pos(double pos[]) {
         pos[i] = gyro_pos[i];
     }
 }
-
-
