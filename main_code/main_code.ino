@@ -1,9 +1,84 @@
 //  My First Rocket
-#include "display_header.h" 
-#include "radio_functions.h"
-#include "MPU6050/MPU6050.h"
+//#include "display_header.h" 
+//#include "radio_functions.h"
+//#include "MPU6050/MPU6050.h"
+
+// This code assumes the usage of the following sensors:
+// BMP280 - altitude
+// BNO055 - gyro
+// Adafruit ULTIMATE GPS
+// Motor control from Polulu
+
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BMP280.h>
+
+Adafruit_BMP280 bme; // I2C
+
+int curr_alt = 0;
+
+////////////////////////// MOTOR TEAM /////////////////////////
+void motor_init() {
+  // setup pinmodes
+}
+// update the pwm signal based on input from sensors
+void motor_calc (){
+  // do calculations here
+}
+
+void motor_update() {
+  // update signal to motors here
+}
+///////////////////////////////////////////////////////////////
+
+///////////////////////// SENSOR TEAM /////////////////////////
+void sensor_init() {
+  // setup pinmodes and check
+  if (!bme.begin()) {  
+    Serial.println("Could not find a valid BMP280 sensor, check wiring!");
+    while (1);
+  }
+}
+
+void update_sensors() {
+  // update the sensors
+  curr_alt = bme.readAltitude(1013.25);
+
+
+    Serial.print("Approx altitude = ");
+    Serial.print(curr_alt); // this should be adjusted to your local forcase
+    Serial.println(" m");
+    
+    // Serial.println();
+    // delay(2000);
+
+}
+///////////////////////////////////////////////////////////////
+
+///////////////////////// RADIO TEAM //////////////////////////
+void radio_init() {
+  Serial2.begin(9600); // USE TX/RX 2 of Teensy 3.5
+}
+
+void update_radio() {
+  
+}
+///////////////////////////////////////////////////////////////
 
 void setup() {
+  
+  Serial.begin(9600);
+  
+  delay(1000);
+  Serial.println("Hello");
+
+  radio_init();
+
+  sensor_init();
+
+  
+  motor_init();
   // some code to start
   //init_all();
   //screen_huh(); // check if display is on or off
@@ -13,59 +88,12 @@ void setup() {
 
 void loop() {
   // keep on spinning
+    sensor_update();
+    motor_calc();
+    motor_update();
+
 
 }
 
 
-// This function begins all functions
-void init_all() {
-  Serial.begin(9600);
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); 
-  display.display();
-  display.clearDisplay();
-  while(radio_init()){
-    dis(0,0,0,0,0);
-  }
-  // Okay radio initialized, tell ground that we are alive.
-  rf95.send((uint8_t *)"Hello ground. AMI beginning initialisation.", 44);
-  while(motor_init()){
-    dis(1,0,0,0,0);
-  }
-  rf95.send((uint8_t *)"Motor online.",14);
-  while(altitude_init()){
-    dis(1,1,0,0,0);
-  }
-  rf95.send((uint8_t *)"Altitude online. Current altitude is: ",39);
-  while(gps_init()){
-    dis(1,1,1,0,0);
-  }
-  rf95.send((uint8_t *)"GPS online. Current location is: ",34);
-  while(accelometer_init()){
-    dis(1,1,1,1,0);
-  }
-  rf95.send((uint8_t *)"Accelometer online. Current velocity is: ",42);
-  dis(1,1,1,1,1);
-  rf95.send((uint8_t *)"All systems online. AMI handling control to ground.",52);
-}
-
-// This function displays the status of the rocket
-void dis(int radio, int motor,int alt, int gps, int acc){
-  
-}
-
-// dummy functions
-bool motor_init(){
-  return true;
-}
-
-bool altitude_init(){
-  return true;
-}
-
-bool gps_init(){
-  return true;
-}
-bool accelometer_init(){
-  return true;
-}
 
