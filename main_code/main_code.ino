@@ -2,7 +2,7 @@
 //#include "display_header.h" 
 //#include "radio_functions.h"
 //#include "MPU6050/MPU6050.h"
-
+//#include "pid.h"
 // This code assumes the usage of the following sensors:
 // BMP280 - altitude
 // BNO055 - gyro
@@ -13,55 +13,191 @@
 #include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
-#include <Adafruit_BNO055.h>
 
 Adafruit_BMP280 bme; // I2C
-sensors_event_t GYRO;
-
 
 int curr_alt = 0;
 
 ////////////////////////// MOTOR TEAM /////////////////////////
 void motor_init() {
-  // setup pinmodes
+  pinMode(A9, OUTPUT);
+  pinMode(A8, OUTPUT);
+  pinMode(A7, INPUT);
 }
 // update the pwm signal based on input from sensors
 void motor_calc (){
-  // do calculations here
-}
+  int prevEI;
+  float pE, iE, dE;
+  float dAvg[5] = {prevE, prevE, prevE, prevE, prevE};
+  int dAvgPoint = 0;
+  int waitTimeConstant = waitTime;
+  float initalVelocityThreshold = 180;
+  enum flightPlan_t { RESET, PID } plan = RESET;
+  int calculatePID() {
+      float u;
+      int dt = currentData.time - prevData.time;
+      turnLeft = turnLeft - xdot;
+      float error = 0;
+      error = calculateError();
+    
+      // Scales pE
+      pE = error * kp;
+    
+      // calculates Moving average derivative
+      dAvg[dAvgPoint] = (error - prevE) / dt;
+      dAvgPoint++;
+      dAvgPoint = dAvgPoint % 5;
+      dE = 0;
+      for (int i = 0; i < 5; i++) {
+          dE += dAvg[i];
+      }
+      dE = dE / 5;
+
+      // Sets prevE to be this eror
+      prevE = error;
+
+      // Sets prevEI to be running sum
+      prevEI += error * dt;
+
+
+      // Anti integrator
+      if (prevEI > 60 / ki) { 
+          prevEI = 60 / ki;
+      }
+      if (prevEI < -60 / ki) {
+          prevEI = -60 / ki;
+      }
+
+      // scales iE
+      iE = prevEI * ki;
+
+      // scales dE
+      dE = kd * dE;
+
+      // Sum of everything is the motor output
+      u = iE + dE + pE;
+
+      return u;
+  }
+
+  // Takes in power and turns it into a directional output
+  void outputMotor(int power) {
+
+      // what is powerG? I don't know
+      powerG = power;
+
+      // Positive power is direction Pin HIGH.
+      if (power > 0) {
+          digitalWrite(directionPin, HIGH);
+          analogWrite(speedPin, abs(power));
+      }
+      else { // else its 0 or negative. Either way, direction is LOW
+          digitalWrite(directionPin, LOW);
+          analogWrite(speedPin, abs(power));
+      }
+  }
+
+  // Calculates PID value and outputs to motor.
+  void callThemAll(uint32_t startTime) {
+
+      // If time elapsed (which shoudl be its own thing) is greater than waitTime
+//      if ((currentData.time - startTime) > waitTime) {
+          // get initial velocity
+              //  if (abs(launchGyro/SENSORS_DPS_TO_RADS)<50) {
+              // if it is, we do the PID only method of contolling it
+     plan = PID;
+              //}
+              //else {
+              // else we change the plan to reset the velocity first
+             // plan = RESET;
+              //}
+
+          }
+
+          // u is the number to output to the Motor
+          int u = 0;
+
+          // if the plan is to PID the controller
+          if (plan == PID) {
+              // gets PID calculations
+              u = calculatePID();
+          }
+              // Else if the plan is to Reset, we call the resetVelocity function
+          else{
+              // sets u to the velocity given by the resetVelocity function
+              u = resetVelocity();
+          }
+
+          // limits u to +- 255, though it should be fine without this
+
+          if ( u < -255) {
+              u = -255;
+          }
+          // Outputs that to the motor
+
+          if (u > 255) {
+              u = 255;
+          }
+          outputMotor(u);
+      }
+  }
+
+  // Generates a linear trajectory to reach the desired position.
+  float calculateError(void) {
+      // get time elasped, which is currentTime - launchTime - waitTime
+      int timeElapsed = currentData.time - launchTimestamp - waitTimeConstant;
+      if (timeElapsed < 0)
+      {
+          return 0;
+      }
+      // this is kinda like how far from the target we should be
+      //So this returns anywhere from 0.8 of the original turnLeft to 0;
+      float errorT = 0.8 * ogTurnLeft - (0.8 * ogTurnLeft * timeElapsed) / targetTime;
+
+      // we dont want this to keep going forever
+      if (((errorT < 0) && (ogTurnLeft > 0)) || ((errorT > 0) && (ogTurnLeft < 0))) {
+          errorT = 0;
+      }
+
+      // we take turnLeft - errorT to get a line going from 20% of turnLeft to 100% of turnLeft in targetTime
+      errorT = turnLeft - errorT;
+
+      return errorT;
+  }
+
+  void resetController(void) {
+      prevEI=0;
+
+      ogTurnLeft = abs(ogTurnLeft);
+      turnLeft = ogTurnLeft;
+      prevE = 0.2*turnLeft;
+      powerG=0;
+      isLaunchGyroSet = 0;
+      pE=0;
+      iE=0;
+      dE=0;
+      dAvgPoint = 0;
+      initalVelocityThreshold = 180;
+      plan = RESET;
+  }
+  }
 
 void motor_update() {
-  // update signal to motors here
-}
-///////////////////////////////////////////////////////////////
+int calculatePID();
 
-///////////////////////// SENSOR TEAM /////////////////////////
-void sensor_init() {
-  // setup pinmodes and check
-  if (!bme.begin()) {  
-    Serial.println("Could not find a valid BMP280 sensor, check wiring!");
-    while (1);
-  }
-  if (!bno.begin()) {
-    Serial.println("Could not find a valid BNO055.");
-    while (1);
-  }
+//outputs the PID output to the motor, sanitizing as necessary
+void outputMotor(int power);
+
+//Calls the other functions in sequence to get an output to the motor
+void callThemAll(uint32_t timestamp);
+
+//generates a linear trajectory error path for us to follow
+float calculateError();
+
+//resets controller
+void resetController();
 }
 
-void update_sensors() {
-  // BME
-  curr_alt = bme.readAltitude(1013.25);
-  Serial.print("Approx altitude = ");
-  Serial.print(curr_alt); // this should be adjusted to your local forcase
-  Serial.println(" m");
-
-  // BNO
-  bno.getEvent(&GYRO);
-  // GYRO.orientation.(x/y/z)
-  Serial.print("X axis orientation: ");
-  Serial.println(GYRO.orientation.x);
-
-}
 ///////////////////////////////////////////////////////////////
 
 ///////////////////////// RADIO TEAM //////////////////////////
