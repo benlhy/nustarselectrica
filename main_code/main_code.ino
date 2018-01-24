@@ -13,8 +13,11 @@
 #include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
+#include <Adafruit_BNO055.h>
 
 Adafruit_BMP280 bme; // I2C
+sensors_event_t GYRO;
+
 
 int curr_alt = 0;
 
@@ -39,19 +42,24 @@ void sensor_init() {
     Serial.println("Could not find a valid BMP280 sensor, check wiring!");
     while (1);
   }
+  if (!bno.begin()) {
+    Serial.println("Could not find a valid BNO055.");
+    while (1);
+  }
 }
 
 void update_sensors() {
-  // update the sensors
+  // BME
   curr_alt = bme.readAltitude(1013.25);
+  Serial.print("Approx altitude = ");
+  Serial.print(curr_alt); // this should be adjusted to your local forcase
+  Serial.println(" m");
 
-
-    Serial.print("Approx altitude = ");
-    Serial.print(curr_alt); // this should be adjusted to your local forcase
-    Serial.println(" m");
-    
-    // Serial.println();
-    // delay(2000);
+  // BNO
+  bno.getEvent(&GYRO);
+  // GYRO.orientation.(x/y/z)
+  Serial.print("X axis orientation: ");
+  Serial.println(GYRO.orientation.x);
 
 }
 ///////////////////////////////////////////////////////////////
