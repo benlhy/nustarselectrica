@@ -20,9 +20,9 @@ int curr_alt = 0;
 
 ////////////////////////// MOTOR TEAM /////////////////////////
 void motor_init() {
-  pinMode(A9, OUTPUT);
-  pinMode(A8, OUTPUT);
-  pinMode(A7, INPUT);
+  pinMode(A9, INPUT); //motor direction input A
+  pinMode(A8, INPUT); //motor direction input B
+  pinMode(A7, PWM); //controls motor speed
 }
 // update the pwm signal based on input from sensors
 void motor_calc (){
@@ -31,12 +31,11 @@ void motor_calc (){
   float dAvg[5] = {prevE, prevE, prevE, prevE, prevE};
   int dAvgPoint = 0;
   int waitTimeConstant = waitTime;
-  float initalVelocityThreshold = 180;
+  float initialVelocityThreshold = 180;
   enum flightPlan_t { RESET, PID } plan = RESET;
   int calculatePID() {
       float u;
       int dt = currentData.time - prevData.time;
-      turnLeft = turnLeft - xdot;
       float error = 0;
       error = calculateError();
     
@@ -82,10 +81,6 @@ void motor_calc (){
 
   // Takes in power and turns it into a directional output
   void outputMotor(int power) {
-
-      // what is powerG? I don't know
-      powerG = power;
-
       // Positive power is direction Pin HIGH.
       if (power > 0) {
           digitalWrite(directionPin, HIGH);
@@ -99,20 +94,8 @@ void motor_calc (){
 
   // Calculates PID value and outputs to motor.
   void callThemAll(uint32_t startTime) {
-
-      // If time elapsed (which shoudl be its own thing) is greater than waitTime
-//      if ((currentData.time - startTime) > waitTime) {
-          // get initial velocity
-              //  if (abs(launchGyro/SENSORS_DPS_TO_RADS)<50) {
-              // if it is, we do the PID only method of contolling it
      plan = PID;
-              //}
-              //else {
-              // else we change the plan to reset the velocity first
-             // plan = RESET;
-              //}
 
-          }
 
           // u is the number to output to the Motor
           int u = 0;
@@ -210,6 +193,34 @@ void update_radio() {
 }
 ///////////////////////////////////////////////////////////////
 
+//////////////////////////CAMERA CODE//////////////////////////
+int trig = 0;
+int led = 1;
+
+void cameraSetup() {
+  // initialize digital pins as output
+  pinMode(led, OUTPUT);
+  pinMode(trig, OUTPUT);
+
+  digitalWrite(led,HIGH);
+  digitalWrite(trig, HIGH);
+
+}
+
+void cameraLoop() {
+  // set a single loop for the camera to run
+  digitalWrite(trig, LOW);
+  digitalWrite(led, LOW);
+
+  delay(150);
+
+  digitalWrite(trig, HIGH);
+  digitalWrite(led, HIGH);
+
+  delay(500);//how long before it stops recording video
+}
+
+/////////////////////////////////////////////////////////////
 void setup() {
   
   Serial.begin(9600);
@@ -220,8 +231,7 @@ void setup() {
   radio_init();
 
   sensor_init();
-
-  
+ 
   motor_init();
   // some code to start
   //init_all();
