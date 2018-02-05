@@ -16,11 +16,10 @@
 #include <Adafruit_BNO055.h>
 #include <Adafruit_GPS.h>
 #include <utility/imumaths.h>
+#include <SoftwareSerial.h>
+#include <TinyGPS++.h>
 
 #define mySerial Serial1
-
-
-
 
 /* Set the delay between fresh samples */
 #define BNO055_SAMPLERATE_DELAY_MS (100)
@@ -32,6 +31,8 @@ Adafruit_GPS GPS(&mySerial);
 Adafruit_BMP280 bme; // I2C
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
+
+TinyGPSPlus gps; // define tinygps as gps
 
 
 int prevE = 0;
@@ -55,109 +56,106 @@ float desiredZ = 0;
 
 int Kp = 0, Kd = 0, Ki = 0;
 
-float lat=0,lon=0;
+float lat = 0, lon = 0;
 uint32_t timer = millis();
 
 
 boolean usingInterrupt = false;
 void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 /////////////////////////// GPS INIT/////////////////////////
-void gps_init() {
-  GPS.begin(9600);
-  mySerial.begin(9600);
-  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
-  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
-#ifdef __arm__
-  usingInterrupt = false;  //NOTE - we don't want to use interrupts on the Due
-#else
-  useInterrupt(true);
-#endif
 
-  delay(1000);
-  // Ask for firmware version
-  mySerial.println(PMTK_Q_RELEASE);
+
+
+
+static void smartdelay(unsigned long ms);
+
+void gps_init(){
+  mySerial.begin(9600); //
 }
 
-#ifdef __AVR__
-// Interrupt is called once a millisecond, looks for any new GPS data, and stores it
-SIGNAL(TIMER0_COMPA_vect) {
-  char c = GPS.read();
-  // if you want to debug, this is a good time to do it!
-#ifdef UDR0
-  if (GPSECHO)
-    if (c) UDR0 = c;  
-    // writing direct to UDR0 is much much faster than Serial.print 
-    // but only one character can be written at a time. 
-#endif
+
+void gps_update() {
+  float flat, flon; // variable definition
+  int year; // variable definition for age
+  byte month, day, hour, minute, second, hundredths;
+  unsigned long age; // variable definition for age
+
+  while (mySerial.available() > 0)
+    gps.encode(mySerial.read());
+
+  //if (gps.altitude.isUpdated())
+  //  Serial.println(gps.altitude.meters());
+
+  Serial.print("LAT=");  Serial.println(gps.location.lat(), 6);
+  Serial.print("LONG="); Serial.println(gps.location.lng(), 6);
+  Serial.print("ALT=");  Serial.println(gps.altitude.meters());
+
+  /*
+    Serial.println(gps.location.lat(), 6); // Latitude in degrees (double)
+    Serial.println(gps.location.lng(), 6); // Longitude in degrees (double)
+    Serial.print(gps.location.rawLat().negative ? "-" : "+");
+    Serial.println(gps.location.rawLat().deg); // Raw latitude in whole degrees
+    Serial.println(gps.location.rawLat().billionths);// ... and billionths (u16/u32)
+    Serial.print(gps.location.rawLng().negative ? "-" : "+");
+    Serial.println(gps.location.rawLng().deg); // Raw longitude in whole degrees
+    Serial.println(gps.location.rawLng().billionths);// ... and billionths (u16/u32)
+    Serial.println(gps.date.value()); // Raw date in DDMMYY format (u32)
+    Serial.println(gps.date.year()); // Year (2000+) (u16)
+    Serial.println(gps.date.month()); // Month (1-12) (u8)
+    Serial.println(gps.date.day()); // Day (1-31) (u8)
+    Serial.println(gps.time.value()); // Raw time in HHMMSSCC format (u32)
+    Serial.println(gps.time.hour()); // Hour (0-23) (u8)
+    Serial.println(gps.time.minute()); // Minute (0-59) (u8)
+    Serial.println(gps.time.second()); // Second (0-59) (u8)
+    Serial.println(gps.time.centisecond()); // 100ths of a second (0-99) (u8)
+    Serial.println(gps.speed.value()); // Raw speed in 100ths of a knot (i32)
+    Serial.println(gps.speed.knots()); // Speed in knots (double)
+    Serial.println(gps.speed.mph()); // Speed in miles per hour (double)
+    Serial.println(gps.speed.mps()); // Speed in meters per second (double)
+    Serial.println(gps.speed.kmph()); // Speed in kilometers per hour (double)
+    Serial.println(gps.course.value()); // Raw course in 100ths of a degree (i32)
+    Serial.println(gps.course.deg()); // Course in degrees (double)
+    -Serial.println(gps.altitude.value()); // Raw altitude in centimeters (i32)
+    Serial.println(gps.altitude.meters()); // Altitude in meters (double)
+    Serial.println(gps.altitude.miles()); // Altitude in miles (double)
+    Serial.println(gps.altitude.kilometers()); // Altitude in kilometers (double)
+    Serial.println(gps.altitude.feet()); // Altitude in feet (double)
+  */
+  Serial.print("Number of satellites in use   ");  Serial.println(gps.satellites.value()); // Number of satellites in use (u32)
+  /*
+    Serial.println(gps.hdop.value()); // Horizontal Dim. of Precision (100ths-i32)
+
+  */
+
+
+
+  /* gps.f_get_position(&flat, &flon, &age); //
+    Serial.print(flon,6); //
+    desimalt
+    Serial.print(", "); //
+    Serial.print(flat,6); //
+    grader desimalt
+    Serial.print(", "); //
+    Serial.print(gps.f_altitude(), 2); //
+
+  */
+  Serial.println();
+  
 }
 
-void useInterrupt(boolean v) {
-  if (v) {
-    // Timer0 is already used for millis() - we'll just interrupt somewhere
-    // in the middle and call the "Compare A" function above
-    OCR0A = 0xAF;
-    TIMSK0 |= _BV(OCIE0A);
-    usingInterrupt = true;
-  } else {
-    // do not call the interrupt function COMPA anymore
-    TIMSK0 &= ~_BV(OCIE0A);
-    usingInterrupt = false;
+static void smartdelay(unsigned long ms)
+{
+  unsigned long start = millis(); 
+  do // 
+  {
+    while (mySerial.available())gps.encode(mySerial.read());
   }
+  while (millis() - start < ms);
 }
-#endif //#ifdef__AVR__
 
 
-void gps_update(){
-  // in case you are not using the interrupt above, you'll
-  // need to 'hand query' the GPS, not suggested :(
-  if (! usingInterrupt) {
-    // read data from the GPS in the 'main loop'
-    char c = GPS.read();
-    // if you want to debug, this is a good time to do it!
-    if (GPSECHO)
-      if (c) Serial.print(c);
-  }
-  
-  // if a sentence is received, we can check the checksum, parse it...
-  if (GPS.newNMEAreceived()) {
-    // a tricky thing here is if we print the NMEA sentence, or data
-    // we end up not listening and catching other sentences! 
-    // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-    //Serial.println(GPS.lastNMEA());   // this also sets the newNMEAreceived() flag to false
-  
-    if (!GPS.parse(GPS.lastNMEA()))   // this also sets the newNMEAreceived() flag to false
-      return;  // we can fail to parse a sentence in which case we should just wait for another
-  }
 
-  // if millis() or timer wraps around, we'll just reset it
-  
-    if (timer > millis())  timer = millis();
-  
-    // approximately every 2 seconds or so, print out the current stats
-    if (millis() - timer > 2000) { 
-     
-    if (GPS.fix) {
-      Serial.print("Location: ");
-      Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
-      Serial.print(", "); 
-      Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
-      
-      Serial.print("Speed (knots): "); Serial.println(GPS.speed);
-      Serial.print("Angle: "); Serial.println(GPS.angle);
-      Serial.print("Altitude: "); Serial.println(GPS.altitude);
-      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
-      lat = GPS.lat;
-      lon = GPS.lon;
-    }
-    else{
-      Serial.print("No fix!");
-      lat = 0;
-      lon = 0;
-    }
-    }
-  
-  
-}
+
 
 
 
@@ -274,6 +272,32 @@ void radio_init() {
 }
 
 void radio_update() {
+  char inData[20];
+  char inChar = -1;
+  byte index = 0;
+  if (Serial2.available()){
+    while (index<19) {
+      inChar = Serial2.read();
+      inData[index] = inChar;
+      index++;
+      //Serial.print(index);
+    } 
+    inData[index] = '\0';
+    Serial.println(inData);
+    for(int i=0;i<3;i++){
+      int num = (inData[i*3]-'0')*100+(inData[i*3+1]-'0')*10+(inData[i*3+2]-'0')*1;
+      Serial.print("Orient ");
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(num);
+      Serial.print(" ");
+    }
+    Serial.println();
+  }
+  
+  //String str((char*)inData);
+  //  Serial.println(str);
+  //delay(100);
 
   char reply[20];
   Serial2.write("Ground Station: ");
@@ -295,10 +319,10 @@ void radio_update() {
 
 //////////////////////////CAMERA CODE//////////////////////////
 /*
-int trig = 0;
-int led = 1;
+  int trig = 0;
+  int led = 1;
 
-void camera_setup() {
+  void camera_setup() {
   // initialize digital pins as output
   pinMode(led, OUTPUT);
   pinMode(trig, OUTPUT);
@@ -306,7 +330,7 @@ void camera_setup() {
   digitalWrite(led, HIGH);
   digitalWrite(trig, HIGH);
 
-}*/
+  }*/
 ///////////////////////////////////////////////////////////////
 
 
@@ -318,13 +342,13 @@ void setup() {
   Serial.println("Hello");
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
-  gps_init();
+  //gps_init();
 
-  //radio_init();
+  radio_init();
   //camera_setup();
   //sensor_init();
   //motor_init();
-  
+
 
 }
 
@@ -341,8 +365,9 @@ void loop() {
   // Based on the sensors, pass sensor data to motors
   //motor_update();
   // update groundstation
-  //radio_update();
-  gps_update();
+  radio_update();
+  //gps_update();
+  smartdelay(1000);
   //delay(500);
 
 }
