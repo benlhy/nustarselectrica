@@ -56,16 +56,11 @@ float desiredZ = 0;
 
 int Kp = 0, Kd = 0, Ki = 0;
 
-float lat = 0, lon = 0;
+float currLat = 0, currLon = 0;
+int heartbeat = 0;
 uint32_t timer = millis();
 
-
-boolean usingInterrupt = false;
-void useInterrupt(boolean); // Func prototype keeps Arduino 0023 happy
 /////////////////////////// GPS INIT/////////////////////////
-
-
-
 
 static void smartdelay(unsigned long ms);
 
@@ -89,6 +84,8 @@ void gps_update() {
   Serial.print("LAT=");  Serial.println(gps.location.lat(), 6);
   Serial.print("LONG="); Serial.println(gps.location.lng(), 6);
   Serial.print("ALT=");  Serial.println(gps.altitude.meters());
+  currLon = gps.location.lng();
+  currLat = gps.location.lat();
 
   /*
     Serial.println(gps.location.lat(), 6); // Latitude in degrees (double)
@@ -152,11 +149,6 @@ static void smartdelay(unsigned long ms)
   }
   while (millis() - start < ms);
 }
-
-
-
-
-
 
 
 
@@ -274,35 +266,43 @@ void radio_init() {
 void radio_update() {
   char inData[20];
   char inChar = -1;
-  byte index = 0;
+  int index = 0;
+  int feedback = 0;
   if (Serial2.available()){
-    while (index<19) {
+    
+    while (inChar != 'E') {
       inChar = Serial2.read();
       inData[index] = inChar;
       index++;
-      //Serial.print(index);
     } 
+    Serial.print(index);
     inData[index] = '\0';
     Serial.println(inData);
-    for(int i=0;i<3;i++){
-      int num = (inData[i*3]-'0')*100+(inData[i*3+1]-'0')*10+(inData[i*3+2]-'0')*1;
-      Serial.print("Orient ");
-      Serial.print(i);
-      Serial.print(": ");
-      Serial.print(num);
-      Serial.print(" ");
+    if ((inData[0]=='B') && (inData[1]=='N')){
+      feedback = (inData[2]-'0')*2;
+      for(int i=0;i<((index-2)/3);i++){
+        int num = (inData[i*3+2]-'0')*100+(inData[i*3+3]-'0')*10+(inData[i*3+4]-'0')*1;
+        Serial.print("Orient ");
+        Serial.print(i);
+        Serial.print(": ");
+        Serial.print(num);
+        Serial.print(" ");
+      }
+      Serial.println();
+      Serial2.write("Okay, rotate parameters updated. ");
     }
-    Serial.println();
   }
   
   //String str((char*)inData);
   //  Serial.println(str);
   //delay(100);
 
+  heartbeat = heartbeat + 1;
+
   char reply[20];
   Serial2.write("Ground Station: ");
   Serial.print("Sending val: ");
-  sprintf(reply, "X:%d Y:%d Z:%d ", orientX, orientY, orientZ);
+  sprintf(reply, "F:%d H:%d X:%d Y:%d Z:%d ",feedback, heartbeat, orientX, orientY, orientZ);
   Serial2.write(reply);
   Serial.print(reply);
   char reply2[20];
@@ -310,7 +310,7 @@ void radio_update() {
   Serial2.write(reply2);
   Serial.print(reply2);
   char reply3[30];
-  sprintf(reply3, "LA:%f LO:%f", lat, lon);
+  sprintf(reply3, "LA:%f LO:%f", currLat, currLon);
   Serial2.write(reply3);
   Serial.println(reply3);
 
@@ -342,7 +342,7 @@ void setup() {
   Serial.println("Hello");
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
-  //gps_init();
+  gps_init();
 
   radio_init();
   //camera_setup();
@@ -366,8 +366,8 @@ void loop() {
   //motor_update();
   // update groundstation
   radio_update();
-  //gps_update();
-  smartdelay(1000);
+  gps_update();
+  smartdelay(100);
   //delay(500);
 
 }
