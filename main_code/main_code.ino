@@ -11,6 +11,7 @@
 
 #include <Wire.h>
 #include <SPI.h>
+#include <SD.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <Adafruit_BNO055.h>
@@ -23,6 +24,9 @@
 
 /* Set the delay between fresh samples */
 #define BNO055_SAMPLERATE_DELAY_MS (100)
+
+const int chipSelect = BUILTIN_SDCARD;
+File dataFile;
 
 Adafruit_GPS GPS(&mySerial);
 
@@ -122,7 +126,6 @@ void gps_update() {
   Serial.print("Number of satellites in use   ");  Serial.println(gps.satellites.value()); // Number of satellites in use (u32)
   /*
     Serial.println(gps.hdop.value()); // Horizontal Dim. of Precision (100ths-i32)
-
   */
 
 
@@ -135,7 +138,6 @@ void gps_update() {
     grader desimalt
     Serial.print(", "); //
     Serial.print(gps.f_altitude(), 2); //
-
   */
   Serial.println();
   
@@ -181,7 +183,7 @@ void sensor_update() {
   float collectY = 0;
   float collectZ = 0;
   // The data will be very noisy, so we have to apply a moving average
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < 5; i++) {
     sensors_event_t event;
     bno.getEvent(&event);
     collectX = event.orientation.x + collectX;
@@ -254,7 +256,7 @@ void motor_update () {
     digitalWrite(A8, 0);
     digitalWrite(A9, 0);
     analogWrite(A7, controlu);
-    Serial.print("Maintaining position!")
+    Serial.print("Maintaining position!");
   }
   
 }
@@ -264,11 +266,26 @@ void motor_update () {
 ///////////////////////////////////////////////////////////////
 
 ///////////////////////// RADIO TEAM //////////////////////////
+void sd_init()
+{
+
+  Serial.print("Initializing SD card...");
+  
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    return;
+  }
+  Serial.println("card initialized.");
+}
+
 void radio_init() {
   Serial2.begin(9600); // USE TX/RX 2 of Teensy 3.5
   for (int i = 0; i < 10; i++) {
     Serial2.write("Radio check");
   }
+
 }
 
 void radio_update() {
@@ -321,6 +338,13 @@ void radio_update() {
   sprintf(reply3, "LA:%f LO:%f", currLat, currLon);
   Serial2.write(reply3);
   Serial.println(reply3);
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
+  if (dataFile) {
+    dataFile.print(reply);
+    dataFile.print(reply2);
+    dataFile.println(reply3);
+    dataFile.close();
+  }
 
 }
 ///////////////////////////////////////////////////////////////
@@ -329,15 +353,12 @@ void radio_update() {
 /*
   int trig = 0;
   int led = 1;
-
   void camera_setup() {
   // initialize digital pins as output
   pinMode(led, OUTPUT);
   pinMode(trig, OUTPUT);
-
   digitalWrite(led, HIGH);
   digitalWrite(trig, HIGH);
-
   }*/
 ///////////////////////////////////////////////////////////////
 
@@ -354,6 +375,8 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
   gps_init();
+  sd_init();
+  dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   radio_init();
   //camera_setup();
@@ -378,9 +401,6 @@ void loop() {
   // update groundstation
   radio_update();
   gps_update();
-  smartdelay(50);
+  smartdelay(10);
 
 }
-
-
-
