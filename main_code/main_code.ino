@@ -49,6 +49,7 @@ int orientZ = 0;
 int temp = 0;
 int pressure = 0;
 int alt = 0;
+int baseAlt = 0;
 
 float desiredX = 0;
 float desiredY = 0;
@@ -165,7 +166,11 @@ void sensor_init() {
     Serial.println("Could not find a valid BMP280 sensor, check wiring!");
     while (1);
   }
-
+  for (int i =0; i<10; i++){
+    baseAlt = baseAlt + bme.readAltitude(1000);
+  }
+  baseAlt = baseAlt/10;
+  
 }
 
 
@@ -182,14 +187,14 @@ void sensor_update() {
     collectX = event.orientation.x + collectX;
     collectY = event.orientation.y + collectY;
     collectZ = event.orientation.z + collectZ;
-    delay(5);
+    delay(2);
   }
   orientX = collectX / 10;
   orientY = collectY / 10;
   orientZ = collectZ / 10;
   temp = bme.readTemperature();
   pressure = bme.readPressure();
-  alt = bme.readAltitude(997.03);
+  alt = bme.readAltitude(1000)-baseAlt;
   Serial.print("Temperature = ");
   Serial.print(temp);
   Serial.println(" *C");
@@ -214,7 +219,7 @@ void motor_update () {
   currE = desiredX - orientX;
   prevED = prevE - currE;
   prevEI = prevEI + currE;
-  // anti integrator
+  // anti integrator, stops integrating once we saturate
   if (prevEI > 60) {
     prevEI = 60;
   }
@@ -243,12 +248,15 @@ void motor_update () {
     digitalWrite(A8, 1);
     digitalWrite(A9, 0);
     analogWrite(A7, controlu);
+    
   }
   else if (controlu == 0) {
     digitalWrite(A8, 0);
     digitalWrite(A9, 0);
     analogWrite(A7, controlu);
+    Serial.print("Maintaining position!")
   }
+  
 }
 
 
@@ -339,14 +347,17 @@ void setup() {
 
   Serial.begin(115200);
   delay(1000);
-  Serial.println("Hello");
+  Serial.println("NUSTARS Fundation Electrica");
+  Serial.println("Confirmation code: BN");
+  Serial.println("Termination code: E");
+  Serial.println("Currently accepting confirmation code, feedback value, orientation (0-360) positions at 1 sec intervals, termination code.");
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
   gps_init();
 
   radio_init();
   //camera_setup();
-  //sensor_init();
+  sensor_init();
   //motor_init();
 
 
@@ -361,14 +372,13 @@ void loop() {
 
 
   // Here we update the sensors
-  //sensor_update();// delay for 50ms
+  sensor_update();// delay for 50ms
   // Based on the sensors, pass sensor data to motors
   //motor_update();
   // update groundstation
   radio_update();
   gps_update();
-  smartdelay(100);
-  //delay(500);
+  smartdelay(50);
 
 }
 
