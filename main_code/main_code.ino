@@ -37,7 +37,7 @@ Adafruit_BMP280 bme; // I2C
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
 TinyGPSPlus gps; // define tinygps as gps
-
+Wire.setClock(400000);
 
 int prevE = 0;
 int prevEI = 0;
@@ -402,7 +402,6 @@ void setup() {
 
 
 }
-
 
 
 long lasttime = millis();
