@@ -353,7 +353,18 @@ void radio_update() {
 
 //////////////////////////CAMERA CODE//////////////////////////
 void camera_setup(){
-  ;
+  int trig = 2;
+  pinMode(trig, OUTPUT);
+  digitalWrite(trig, LOW);
+  delay(300);
+  digitalWrite(trig,HIGH);
+  delay(50);
+  digitalWrite(trig, LOW);
+  delay(1000);
+  digitalWrite(trig,HIGH);
+  delay(50);
+  digitalWrite(trig,LOW);
+  
 }
 /*
   int trig = 0;
