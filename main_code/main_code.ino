@@ -37,7 +37,7 @@ Adafruit_BMP280 bme; // I2C
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
 TinyGPSPlus gps; // define tinygps as gps
-Wire.setClock(400000);
+//Wire.setClock(400000);
 
 int prevE = 0;
 int prevEI = 0;
@@ -289,7 +289,11 @@ void radio_init() {
   }
 
 }
-
+// Example
+// [confirm] [feedback] [orient] [termination]
+//    BN         2      360180220     E
+// [confirm] [command]
+//    BN         K (read back all data from SD card)
 void radio_update() {
   char inData[20];
   char inChar = -1;
@@ -298,6 +302,7 @@ void radio_update() {
   if (Serial2.available()){
     
     while (inChar != 'E') {
+      // terminating character
       inChar = Serial2.read();
       inData[index] = inChar;
       index++;
@@ -352,19 +357,34 @@ void radio_update() {
 ///////////////////////////////////////////////////////////////
 
 //////////////////////////CAMERA CODE//////////////////////////
+int cameraCounter = 0;
+int trig = 2;
 void camera_setup(){
-  int trig = 2;
+  
   pinMode(trig, OUTPUT);
-  digitalWrite(trig, LOW);
-  delay(300);
-  digitalWrite(trig,HIGH);
-  delay(50);
-  digitalWrite(trig, LOW);
-  delay(1000);
-  digitalWrite(trig,HIGH);
+  digitalWrite(trig, HIGH);
   delay(50);
   digitalWrite(trig,LOW);
+  //delay(10000);
+  //digitalWrite(trig, LOW);
   
+}
+
+void camera_update(){
+  if (cameraCounter<100){
+    cameraCounter++;
+
+  }
+  else {
+    cameraCounter=0;
+    digitalWrite(trig,HIGH);
+    delay(10);
+    digitalWrite(trig,LOW);
+    delay(100);
+    digitalWrite(trig,HIGH);
+    delay(50);
+    digitalWrite(trig,LOW);
+  }
 }
 /*
   int trig = 0;
@@ -415,6 +435,7 @@ void loop() {
   lasttime = millis();
   Serial.print("Time per loop: ");
   Serial.println(diff);
+  camera_update();
 
 
   // Here we update the sensors
