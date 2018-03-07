@@ -353,7 +353,25 @@ void radio_update() {
     dataFile.close();
   }
 
+// Read off SD to XBee
+
+  if ((inData[2]=='S') && (inData[3]=='D')) {
+    dataFile = SD.open("datalog.txt", FILE_WRITE);
+    if (dataFile) {
+      Serial.println("datalog.txt:");
+
+      while (dataFile.available()) {
+        xbee.write(dataFile.read());
+      }
+      
+      dataFile.close();
+    } else {
+      Serial.println("error opening datalog.txt");
+    }
+  }
+  
 }
+
 ///////////////////////////////////////////////////////////////
 
 //////////////////////////CAMERA CODE//////////////////////////
@@ -408,6 +426,7 @@ void setup() {
   Serial.println("NUSTARS Fundation Electrica");
   Serial.println("Confirmation code: BN");
   Serial.println("Termination code: E");
+  Serial.println("Send SD data code: SD");
   Serial.println("Currently accepting confirmation code, feedback value, orientation (0-360) positions at 1 sec intervals, termination code.");
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
@@ -449,3 +468,4 @@ void loop() {
   
 
 }
+
