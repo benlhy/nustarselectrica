@@ -23,7 +23,7 @@
 #define mySerial Serial1
 
 /* Set the delay between fresh samples */
-#define BNO055_SAMPLERATE_DELAY_MS (100)
+#define BNO055_SAMPLERATE_DELAY_MS (1)
 
 const int chipSelect = BUILTIN_SDCARD;
 File dataFile;
@@ -37,7 +37,7 @@ Adafruit_BMP280 bme; // I2C
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
 TinyGPSPlus gps; // define tinygps as gps
-
+Wire.setClock(400000);
 
 int prevE = 0;
 int prevEI = 0;
@@ -49,6 +49,9 @@ int controlu = 0;
 int orientX = 0;
 int orientY = 0;
 int orientZ = 0;
+float collectX = 0;
+float collectY = 0;
+float collectZ = 0;
 
 int temp = 0;
 int pressure = 0;
@@ -177,11 +180,9 @@ void sensor_init() {
 
 
 void sensor_update() {
-  sensors_event_t event;
-  bno.getEvent(&event);
-  float collectX = 0;
-  float collectY = 0;
-  float collectZ = 0;
+  collectX = 0;
+  collectY = 0;
+  collectZ = 0;
   // The data will be very noisy, so we have to apply a moving average
   for (int i = 0; i < 5; i++) {
     sensors_event_t event;
@@ -189,14 +190,14 @@ void sensor_update() {
     collectX = event.orientation.x + collectX;
     collectY = event.orientation.y + collectY;
     collectZ = event.orientation.z + collectZ;
-    delay(2);
   }
-  orientX = collectX / 10;
-  orientY = collectY / 10;
-  orientZ = collectZ / 10;
+  orientX = collectX / 5;
+  orientY = collectY / 5;
+  orientZ = collectZ / 5;
   temp = bme.readTemperature();
   pressure = bme.readPressure();
   alt = bme.readAltitude(1000)-baseAlt;
+  /*
   Serial.print("Temperature = ");
   Serial.print(temp);
   Serial.println(" *C");
@@ -208,6 +209,7 @@ void sensor_update() {
   Serial.print("Approx altitude = ");
   Serial.print(alt); // this should be adjusted to your local forcase
   Serial.println(" m");
+  */
 }
 ////////////////////////// MOTOR TEAM /////////////////////////
 void motor_init() {
@@ -346,10 +348,42 @@ void radio_update() {
     dataFile.close();
   }
 
+// Read off SD to XBee
+
+  if ((inData[2]=='S') && (inData[3]=='D')) {
+    dataFile = SD.open("datalog.txt", FILE_WRITE);
+    if (dataFile) {
+      Serial.println("datalog.txt:");
+
+      while (dataFile.available()) {
+        xbee.write(dataFile.read());
+      }
+      
+      dataFile.close();
+    } else {
+      Serial.println("error opening datalog.txt");
+    }
+  }
+  
 }
+
 ///////////////////////////////////////////////////////////////
 
 //////////////////////////CAMERA CODE//////////////////////////
+void camera_setup(){
+  int trig = 2;
+  pinMode(trig, OUTPUT);
+  digitalWrite(trig, LOW);
+  delay(300);
+  digitalWrite(trig,HIGH);
+  delay(50);
+  digitalWrite(trig, LOW);
+  delay(1000);
+  digitalWrite(trig,HIGH);
+  delay(50);
+  digitalWrite(trig,LOW);
+  
+}
 /*
   int trig = 0;
   int led = 1;
@@ -361,16 +395,18 @@ void radio_update() {
   digitalWrite(trig, HIGH);
   }*/
 ///////////////////////////////////////////////////////////////
-
+//long lasttime = millis();
 
 /////////////////////////////////////////////////////////////
 void setup() {
+  delay(3000);
 
   Serial.begin(115200);
   delay(1000);
   Serial.println("NUSTARS Fundation Electrica");
   Serial.println("Confirmation code: BN");
   Serial.println("Termination code: E");
+  Serial.println("Send SD data code: SD");
   Serial.println("Currently accepting confirmation code, feedback value, orientation (0-360) positions at 1 sec intervals, termination code.");
   pinMode(13, OUTPUT);
   digitalWrite(13, HIGH);
@@ -379,7 +415,7 @@ void setup() {
   dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   radio_init();
-  //camera_setup();
+  camera_setup();
   sensor_init();
   //motor_init();
 
@@ -387,20 +423,28 @@ void setup() {
 }
 
 
-
-
-
-
+long lasttime = millis();
+long mytime = millis();
+long diff = 0;
+int toggle = 1;
 void loop() {
+  digitalWrite(13,~toggle);
+  mytime = millis();
+  diff = mytime - lasttime;
+  lasttime = millis();
+  Serial.print("Time per loop: ");
+  Serial.println(diff);
 
 
   // Here we update the sensors
-  sensor_update();// delay for 50ms
+  sensor_update();// delay for 1ms
   // Based on the sensors, pass sensor data to motors
   //motor_update();
   // update groundstation
   radio_update();
   gps_update();
   smartdelay(10);
+  
 
 }
+
