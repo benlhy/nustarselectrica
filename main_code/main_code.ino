@@ -353,7 +353,7 @@ void radio_update() {
     dataFile.close();
   }
 
-// Read off SD to XBee
+// Read off SD to XBee (Serial 2)
 
   if ((inData[2]=='S') && (inData[3]=='D')) {
     dataFile = SD.open("datalog.txt", FILE_WRITE);
@@ -361,7 +361,7 @@ void radio_update() {
       Serial.println("datalog.txt:");
 
       while (dataFile.available()) {
-        xbee.write(dataFile.read());
+        Serial2.write(dataFile.read());
       }
       
       dataFile.close();
