@@ -70,7 +70,7 @@ uint32_t timer = millis();
 
 /////////////////////////// GPS INIT/////////////////////////
 
-static void smartdelay(unsigned long ms);
+static void encodeGPS();
 
 void gps_init(){
   mySerial.begin(9600); //
@@ -146,14 +146,19 @@ void gps_update() {
   
 }
 
-static void smartdelay(unsigned long ms)
+static void encodeGPS()
 {
+  /*
   unsigned long start = millis(); 
   do // 
   {
-    while (mySerial.available())gps.encode(mySerial.read());
+    while (mySerial.available()) gps.encode(mySerial.read());
   }
   while (millis() - start < ms);
+   */
+  if mySerial.available() {
+    gps.encode(mySerial.read());
+  }
 }
 
 
@@ -464,7 +469,7 @@ void loop() {
   // update groundstation
   radio_update();
   gps_update();
-  smartdelay(10);
+  encodeGPS();
   
 
 }
