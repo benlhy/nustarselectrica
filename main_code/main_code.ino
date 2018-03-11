@@ -280,6 +280,7 @@ void sd_init()
     return;
   }
   Serial.println("card initialized.");
+  delay(3000);
 }
 
 void radio_init() {
@@ -332,18 +333,18 @@ void radio_update() {
   heartbeat = heartbeat + 1;
 
   char reply[20];
-  Serial2.write("Ground Station: ");
+//  Serial2.write("Ground Station: ");
   Serial.print("Sending val: ");
   sprintf(reply, "F:%d H:%d X:%d Y:%d Z:%d ",feedback, heartbeat, orientX, orientY, orientZ);
-  Serial2.write(reply);
-  Serial.print(reply);
+//  Serial2.write(reply);
+//  Serial.print(reply);
   char reply2[20];
   sprintf(reply2, "A:%d P:%d T:%d ", alt, pressure, temp);
-  Serial2.write(reply2);
+//  Serial2.write(reply2);
   Serial.print(reply2);
   char reply3[30];
   sprintf(reply3, "LA:%f LO:%f", currLat, currLon);
-  Serial2.write(reply3);
+//  Serial2.write(reply3);
   Serial.println(reply3);
   dataFile = SD.open("datalog.txt", FILE_WRITE);
   if (dataFile) {
@@ -356,18 +357,24 @@ void radio_update() {
 // Read off SD to XBee (Serial 2)
 
   if ((inData[2]=='S') && (inData[3]=='D')) {
-    dataFile = SD.open("datalog.txt", FILE_WRITE);
-    if (dataFile) {
+    Serial.println("reading SD card");
+    delay(3000);
+    File dataFile1 = SD.open("datalog.txt");
+    if (dataFile1) {
       Serial.println("datalog.txt:");
 
-      while (dataFile.available()) {
-        Serial2.write(dataFile.read());
+      while (dataFile1.available()) {
+        Serial2.write(dataFile1.read());
+        Serial.write(dataFile1.read());
       }
       
-      dataFile.close();
+      dataFile1.close();
     } else {
       Serial.println("error opening datalog.txt");
+      delay(3000);
     }
+    Serial.println("shit");
+    delay(3000);
   }
   
 }
