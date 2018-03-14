@@ -70,7 +70,7 @@ uint32_t timer = millis();
 
 /////////////////////////// GPS INIT/////////////////////////
 
-static void encodeGPS();
+//static void encodeGPS();
 
 void gps_init(){
   mySerial.begin(9600); //
@@ -156,7 +156,7 @@ static void encodeGPS()
   }
   while (millis() - start < ms);
    */
-  if mySerial.available() {
+  if (mySerial.available()) {
     gps.encode(mySerial.read());
   }
 }
