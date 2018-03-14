@@ -28,7 +28,7 @@
 const int chipSelect = BUILTIN_SDCARD;
 File dataFile;
 
-Adafruit_GPS GPS(&mySerial);
+Adafruit_GPS GPS(&mySerial); 
 
 #define GPSECHO  true
 
