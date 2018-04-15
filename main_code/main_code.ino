@@ -202,6 +202,13 @@ void sensor_update() {
   temp = bme.readTemperature();
   pressure = bme.readPressure();
   alt = bme.readAltitude(1000)-baseAlt;
+  Serial.print(orientX);
+  Serial.print(' ');
+  Serial.print(orientY);
+  Serial.print(' ');
+  Serial.print(orientZ);
+  Serial.println(' ');
+  
   /*
   Serial.print("Temperature = ");
   Serial.print(temp);
@@ -225,9 +232,13 @@ void motor_init() {
 // update the pwm signal based on input from sensors
 void motor_update () {
 
+//  Kp = 1;
+  Ki = 1;
+  int desiredX = 0;
   currE = desiredX - orientX;
   prevED = prevE - currE;
   prevEI = prevEI + currE;
+  
   // anti integrator, stops integrating once we saturate
   if (prevEI > 60) {
     prevEI = 60;
@@ -265,6 +276,10 @@ void motor_update () {
     analogWrite(A7, controlu);
     Serial.print("Maintaining position!");
   }
+
+//  digitalWrite(A8, 1);
+//  digitalWrite(A9, 0);
+//  analogWrite(A7, 255);
   
 }
 
@@ -451,7 +466,7 @@ void setup() {
   radio_init();
   camera_setup();
   sensor_init();
-  //motor_init();
+  motor_init();
 
 
 }
@@ -474,7 +489,7 @@ void loop() {
   // Here we update the sensors
   sensor_update();// delay for 1ms
   // Based on the sensors, pass sensor data to motors
-  //motor_update();
+  motor_update();
   // update groundstation
   radio_update();
   gps_update();
@@ -482,4 +497,5 @@ void loop() {
   
 
 }
+
 
