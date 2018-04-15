@@ -364,13 +364,15 @@ void radio_update() {
   if ((inData[2]=='S') && (inData[3]=='D')) {
     Serial.println("reading SD card");
     delay(3000);
+    char input[100];
     File dataFile1 = SD.open("datalog.txt");
     if (dataFile1) {
       Serial.println("datalog.txt:");
 
       while (dataFile1.available()) {
-        Serial2.write(dataFile1.read());
-        Serial.write(dataFile1.read());
+        dataFile1.read(input,10);
+        Serial2.write(input);
+        Serial.write(input);
       }
       
       dataFile1.close();
