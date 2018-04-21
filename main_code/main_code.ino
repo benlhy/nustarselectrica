@@ -275,6 +275,7 @@ void sensor_update() {
   */
 }
 
+
 int inTrack =0;
 int inTrigger = 0;
 long startTime = 0;
@@ -291,17 +292,14 @@ long trackCurrTime = 0;
 void desiredTracker(){
   if (newTrack == 1){ // okay we have a new tracking array
     inTrigger = 1; // this is the first time we are in the trigger
-    newTrack = 0; //
+    newTrack = 0; // reset flag
     startTime = millis(); // get current Time
   }
   if (inTrigger) { // if we are in trigger
     trackCurrTime = millis();
     timeElapsed = (trackCurrTime - startTime)/1000; // time since elapsed, is an int, will be just a number
     desiredX = trackArray[timeElapsed]; // set the desired X
-    Serial.print("CURRENT TRACKED ANGLE: ");
-    Serial.print(desiredX);
-    Serial.print(" TIME: ");
-    Serial.println(timeElapsed);
+
     if (timeElapsed == totalTrackTime) {
       // we are at end of tracking
       inTrigger = 0;
@@ -461,11 +459,16 @@ void radio_update() {
   sprintf(reply3, "LA:%f LO:%f TrackedAngle:%d", currLat, currLon,trackArray[(int)(startTime/millis())]);
   Serial2.write(reply3);
   Serial.println(reply3);
+  char reply4[30];
+  sprintf(reply4, "Currently Tracking: %d, Desired Track is: %d",newTrack,desiredX);
+  Serial2.write(reply4);
+  Serial.println(reply4);
   dataFile = SD.open("datalog.txt", FILE_WRITE);
   if (dataFile) {
     dataFile.print(reply);
     dataFile.print(reply2);
     dataFile.println(reply3);
+    dataFile.println(reply4);
     dataFile.close();
   }
 
@@ -504,13 +507,11 @@ int trig = 2;
 void camera_setup(){
   
   pinMode(trig, OUTPUT);
-  delay(100);
   digitalWrite(trig,HIGH);
   digitalWrite(trig,LOW); 
   delay(1000);
   digitalWrite(trig,HIGH);
-  delay(100);
-  digitalWrite(trig,LOW);
+
 
 
   //delay(10000);
@@ -519,21 +520,19 @@ void camera_setup(){
 }
 
 void camera_update(){
-  if (cameraCounter<100){
+  if (cameraCounter<10000){
     cameraCounter++;
-    digitalWrite(trig,LOW);
-
+    
   }
   else {
     cameraCounter=0;
     digitalWrite(trig,HIGH);
-    delay(25);
     digitalWrite(trig,LOW);
-    delay(500);
+    delay(25); //1000
     digitalWrite(trig,HIGH);
-    delay(25);
     digitalWrite(trig,LOW);
-    //digitalWrite(trig,HIGH);
+    delay(1000); //25
+    digitalWrite(trig,HIGH);
     //delay(50);
     //digitalWrite(trig,LOW);  
 
@@ -545,17 +544,54 @@ void camera_update(){
 }
 /*
  * This function checks all the switches and turns newTrack = 1 if all conditions are met
+ * condition 1: we have a new array to track
+ * condition 2: we are above a minimum height
+ * condition 3: we detected a launch
+ * condition 4: it is 3 seconds after launch event
  */
 
+float lastY = 0;
+int launchCounter = 0;
+int accLaunchFlag = 0;
+long launchStartTimer = 0;
 
 void track_trigger() {
-  if (motorTrigger == 1){
-    if (alt>MIN_HEIGHT){
-      newTrack = 1;
-      motorTrigger = 0;
+
+    imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER); // get acceler
+    float deltaY = 0;
+    int startLaunch = 0;
+    deltaY = acc.y() - lastY;
+    Serial.print("Current Y: ");
+    Serial.println(acc.y());
+    if (deltaY<0){
+      deltaY = -1*deltaY;
     }
-  }
+    if(deltaY>15){ // if 15ms^-2
+      // launch detected
+      launchCounter = launchCounter+1;
+    }
+    if(launchCounter>3){
+      // really launched
+      accLaunchFlag = 1;
+    }
+    lastY = acc.y();
+    
+    if (motorTrigger == 1){
+      if (alt>MIN_HEIGHT){
+        if (accLaunchFlag == 1)
+        startLaunch = 1;
+        motorTrigger=0;
+        launchStartTimer = millis();
+      }
+    }
+    if(startLaunch==1){
+      if ((millis()-launchStartTimer)>3000){
+        newTrack = 1; //start tracking
+      }
+    }
+  
 }
+
 
 /*
   int trig = 0;
@@ -569,6 +605,8 @@ void track_trigger() {
   }*/
 ///////////////////////////////////////////////////////////////
 //long lasttime = millis();
+
+
 
 /////////////////////////////////////////////////////////////
 void setup() {
@@ -611,11 +649,8 @@ long mytime = millis();
 long diff = 0;
 int toggle = 1;
 void loop() {
-
-
-
- 
-  track_trigger();
+  
+  track_trigger(); // triger
 
 
   
