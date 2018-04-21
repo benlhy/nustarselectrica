@@ -20,6 +20,8 @@
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
+#define MIN_HEIGHT 100 // Min height to activate tracking
+
 #define mySerial Serial1
 
 /* Set the delay between fresh samples */
@@ -49,9 +51,24 @@ int controlu = 0;
 int orientX = 0;
 int orientY = 0;
 int orientZ = 0;
+
+int relativeX = 0;
+int modifierX = 0;
+int changeX = 0;
+int lastX = 0;
+
+int motorTrigger = 0; // this starts the countdown for anything in trackArray
+int newTrack = 0;
+int trackArray[10];
+int totalTrackTime = 0;
+int heightReachedHuh = 1;
+
 float collectX = 0;
 float collectY = 0;
 float collectZ = 0;
+float zeroX=0;
+float zeroY=0;
+float zeroZ=0;
 
 int temp = 0;
 int pressure = 0;
@@ -180,6 +197,23 @@ void sensor_init() {
     baseAlt = baseAlt + bme.readAltitude(1000);
   }
   baseAlt = baseAlt/10;
+
+  collectX = 0;
+  collectY = 0;
+  collectZ = 0;
+  // The data will be very noisy, so we have to apply a moving average
+  for (int i = 0; i < 5; i++) {
+    sensors_event_t event;
+    bno.getEvent(&event);
+    collectX = event.orientation.x + collectX;
+    collectY = event.orientation.y + collectY;
+    collectZ = event.orientation.z + collectZ;
+  }
+  zeroX = collectX / 5;
+  zeroY = collectY / 5;
+  zeroZ = collectZ / 5;
+
+  
   
 }
 
@@ -199,6 +233,23 @@ void sensor_update() {
   orientX = collectX / 5;
   orientY = collectY / 5;
   orientZ = collectZ / 5;
+  
+  // Relative
+  changeX = lastX - orientX;
+  if (changeX>180){
+    // crossover from 360 to 0
+    modifierX = modifierX + 360;
+  }
+  else if (changeX<-180){
+    modifierX = modifierX - 360;
+  }
+  relativeX = orientX + modifierX; // now we use relative X to calculate
+  lastX = orientX;
+
+
+
+
+  
   temp = bme.readTemperature();
   pressure = bme.readPressure();
   alt = bme.readAltitude(1000)-baseAlt;
@@ -223,7 +274,45 @@ void sensor_update() {
   Serial.println(" m");
   */
 }
+
+int inTrack =0;
+int inTrigger = 0;
+long startTime = 0;
+long timeElapsed = 0;
+long trackCurrTime = 0;
+
+
 ////////////////////////// MOTOR TEAM /////////////////////////
+/*
+ * We have a tracking array:
+ * [180 0 0 0 180 180 180]
+ * if newTrack is set, then it will start following the array
+ */
+void desiredTracker(){
+  if (newTrack == 1){ // okay we have a new tracking array
+    inTrigger = 1; // this is the first time we are in the trigger
+    newTrack = 0; //
+    startTime = millis(); // get current Time
+  }
+  if (inTrigger) { // if we are in trigger
+    trackCurrTime = millis();
+    timeElapsed = (trackCurrTime - startTime)/1000; // time since elapsed, is an int, will be just a number
+    desiredX = trackArray[timeElapsed]; // set the desired X
+    Serial.print("CURRENT TRACKED ANGLE: ");
+    Serial.print(desiredX);
+    Serial.print(" TIME: ");
+    Serial.println(timeElapsed);
+    if (timeElapsed == totalTrackTime) {
+      // we are at end of tracking
+      inTrigger = 0;
+      startTime = 0;
+      timeElapsed = 0;
+    }
+  }
+}
+
+
+
 void motor_init() {
   pinMode(A9, OUTPUT); //motor direction input A
   pinMode(A8, OUTPUT); //motor direction input B
@@ -232,10 +321,11 @@ void motor_init() {
 // update the pwm signal based on input from sensors
 void motor_update () {
 
-//  Kp = 1;
-  Ki = 1;
-  int desiredX = 0;
-  currE = desiredX - orientX;
+  Kp = 1;
+  //Ki = 1;
+  //desiredTracker();
+  //int desiredX = 0;
+  currE = desiredX - relativeX-zeroX;
   prevED = prevE - currE;
   prevEI = prevEI + currE;
   
@@ -333,6 +423,8 @@ void radio_update() {
     Serial.println(inData);
     if ((inData[0]=='B') && (inData[1]=='N')){
       feedback = (inData[2]-'0')*2;
+      //newTrack = 1; // now we have new array to track
+      totalTrackTime = 0; // put 
       for(int i=0;i<((index-2)/3);i++){
         int num = (inData[i*3+2]-'0')*100+(inData[i*3+3]-'0')*10+(inData[i*3+4]-'0')*1;
         Serial.print("Orient ");
@@ -340,7 +432,10 @@ void radio_update() {
         Serial.print(": ");
         Serial.print(num);
         Serial.print(" ");
+        trackArray[i] = num;
+        totalTrackTime++;
       }
+      motorTrigger = 1; // put where you want to start the tracking.
       Serial.println();
       Serial2.write("Okay, rotate parameters updated. ");
     }
@@ -356,15 +451,15 @@ void radio_update() {
 //  Serial2.write("Ground Station: ");
   Serial.print("Sending val: ");
   sprintf(reply, "F:%d H:%d X:%d Y:%d Z:%d ",feedback, heartbeat, orientX, orientY, orientZ);
-//  Serial2.write(reply);
-//  Serial.print(reply);
+  Serial2.write(reply);
+  Serial.print(reply);
   char reply2[20];
   sprintf(reply2, "A:%d P:%d T:%d ", alt, pressure, temp);
-//  Serial2.write(reply2);
+  Serial2.write(reply2);
   Serial.print(reply2);
   char reply3[30];
-  sprintf(reply3, "LA:%f LO:%f", currLat, currLon);
-//  Serial2.write(reply3);
+  sprintf(reply3, "LA:%f LO:%f TrackedAngle:%d", currLat, currLon,trackArray[(int)(startTime/millis())]);
+  Serial2.write(reply3);
   Serial.println(reply3);
   dataFile = SD.open("datalog.txt", FILE_WRITE);
   if (dataFile) {
@@ -409,9 +504,15 @@ int trig = 2;
 void camera_setup(){
   
   pinMode(trig, OUTPUT);
-  digitalWrite(trig, HIGH);
-  delay(50);
+  delay(100);
+  digitalWrite(trig,HIGH);
+  digitalWrite(trig,LOW); 
+  delay(1000);
+  digitalWrite(trig,HIGH);
+  delay(100);
   digitalWrite(trig,LOW);
+
+
   //delay(10000);
   //digitalWrite(trig, LOW);
   
@@ -420,19 +521,42 @@ void camera_setup(){
 void camera_update(){
   if (cameraCounter<100){
     cameraCounter++;
+    digitalWrite(trig,LOW);
 
   }
   else {
     cameraCounter=0;
     digitalWrite(trig,HIGH);
-    delay(10);
+    delay(25);
     digitalWrite(trig,LOW);
-    delay(100);
+    delay(500);
     digitalWrite(trig,HIGH);
-    delay(50);
+    delay(25);
     digitalWrite(trig,LOW);
+    //digitalWrite(trig,HIGH);
+    //delay(50);
+    //digitalWrite(trig,LOW);  
+
+    //delay(100);
+    //digitalWrite(trig,HIGH);
+    //delay(50);
+    //digitalWrite(trig,LOW);
   }
 }
+/*
+ * This function checks all the switches and turns newTrack = 1 if all conditions are met
+ */
+
+
+void track_trigger() {
+  if (motorTrigger == 1){
+    if (alt>MIN_HEIGHT){
+      newTrack = 1;
+      motorTrigger = 0;
+    }
+  }
+}
+
 /*
   int trig = 0;
   int led = 1;
@@ -469,6 +593,16 @@ void setup() {
   motor_init();
 
 
+  trackArray[0]=180;
+  trackArray[1]=180;
+  trackArray[2]=180;
+  trackArray[3]=180;
+  trackArray[4]=180;
+  trackArray[5]=180;
+
+  totalTrackTime = 5;
+
+
 }
 
 
@@ -477,6 +611,14 @@ long mytime = millis();
 long diff = 0;
 int toggle = 1;
 void loop() {
+
+
+
+ 
+  track_trigger();
+
+
+  
   digitalWrite(13,~toggle);
   mytime = millis();
   diff = mytime - lasttime;
