@@ -299,13 +299,16 @@ void desiredTracker(){
     trackCurrTime = millis();
     timeElapsed = (trackCurrTime - startTime)/1000; // time since elapsed, is an int, will be just a number
     desiredX = trackArray[timeElapsed]; // set the desired X
-
+    motor_update();
     if (timeElapsed == totalTrackTime) {
       // we are at end of tracking
       inTrigger = 0;
       startTime = 0;
       timeElapsed = 0;
     }
+  }
+  else if(inTrigger = 0){
+     analogWrite(A7, 0);//turn off the motor
   }
 }
 
@@ -323,7 +326,7 @@ void motor_update () {
   //Ki = 1;
   //desiredTracker();
   //int desiredX = 0;
-  currE = desiredX - relativeX-zeroX;
+  currE = desiredX - relativeX - zeroX;
   prevED = prevE - currE;
   prevEI = prevEI + currE;
   
@@ -650,7 +653,8 @@ long diff = 0;
 int toggle = 1;
 void loop() {
   
-  track_trigger(); // triger
+  track_trigger(); // trigger
+
 
 
   
@@ -665,8 +669,8 @@ void loop() {
 
   // Here we update the sensors
   sensor_update();// delay for 1ms
+  desiredTracker(); // updates motors.mot
   // Based on the sensors, pass sensor data to motors
-  motor_update();
   // update groundstation
   radio_update();
   gps_update();
