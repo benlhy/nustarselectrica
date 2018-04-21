@@ -323,7 +323,8 @@ void motor_init() {
 void motor_update () {
 
   Kp = 1;
-  //Ki = 1;
+  Kd = 0;
+  Ki = 1;
   //desiredTracker();
   //int desiredX = 0;
   currE = desiredX - relativeX - zeroX;
