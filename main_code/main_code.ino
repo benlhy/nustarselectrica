@@ -85,6 +85,9 @@ float currLat = 0, currLon = 0;
 int heartbeat = 0;
 uint32_t timer = millis();
 
+const int LED_PINS = {24, 25, 26};
+
+
 /////////////////////////// GPS INIT/////////////////////////
 
 //static void encodeGPS();
@@ -341,28 +344,43 @@ void motor_update () {
   controlu = Kp * currE + Kd * prevED + Ki * prevE;
   prevE = currE;
   if (controlu > 255) {
+    setLED(0, true);
+    setLED(1, false);
+    setLED(2, false);
     digitalWrite(A8, 1);
     digitalWrite(A9, 0);
     analogWrite(A7, 255);
   }
   else if ((controlu < 0) && (controlu > -255)) {
     // if we have a negative controlu
+    setLED(0, true);
+    setLED(1, false);
+    setLED(2, false);
     digitalWrite(A8, 0);
     digitalWrite(A9, 1);
     analogWrite(A7, -controlu); //make it positive
   }
   else if (controlu < -255) {
+    setLED(0, false);
+    setLED(1, false);
+    setLED(2, true);
     digitalWrite(A8, 0);
     digitalWrite(A9, 1);
     analogWrite(A7, 255);
   }
   else if (controlu > 0 && controlu < 255) {
+    setLED(0, false);
+    setLED(1, false);
+    setLED(2, true);
     digitalWrite(A8, 1);
     digitalWrite(A9, 0);
     analogWrite(A7, controlu);
     
   }
   else if (controlu == 0) {
+    setLED(0, false);
+    setLED(1, true);
+    setLED(2, false);
     digitalWrite(A8, 0);
     digitalWrite(A9, 0);
     analogWrite(A7, controlu);
@@ -610,7 +628,17 @@ void track_trigger() {
 ///////////////////////////////////////////////////////////////
 //long lasttime = millis();
 
-
+void setLED(int x, bool isOn) {
+  if (x == 0 || x == 1 || x == 2) {
+    if (isOn) {
+      digitalWrite(LED_PINS[x], HIGH);
+    } else {
+      digitalWrite(LED_PINS[x], LOW);
+    }
+  } else {
+    Serial.println("Unexpected LED!");
+  }
+}
 
 /////////////////////////////////////////////////////////////
 void setup() {
