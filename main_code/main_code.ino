@@ -460,7 +460,7 @@ void radio_update() {
   Serial2.write(reply2);
   Serial.print(reply2);
   char reply3[30];
-  sprintf(reply3, "LA:%f LO:%f TrackedAngle:%d", currLat, currLon,trackArray[(int)(startTime/millis())]);
+  sprintf(reply3, "LA:%f LO:%f", currLat, currLon);
   Serial2.write(reply3);
   Serial.println(reply3);
   char reply4[30];
@@ -524,7 +524,7 @@ void camera_setup(){
 }
 
 void camera_update(){
-  if (cameraCounter<10000){
+  if (cameraCounter<100){
     cameraCounter++;
     
   }
@@ -532,8 +532,9 @@ void camera_update(){
     cameraCounter=0;
     digitalWrite(trig,HIGH);
     digitalWrite(trig,LOW);
-    delay(25); //1000
+    delay(100); //1000
     digitalWrite(trig,HIGH);
+    delay(100);
     digitalWrite(trig,LOW);
     delay(1000); //25
     digitalWrite(trig,HIGH);
