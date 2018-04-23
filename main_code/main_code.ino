@@ -85,7 +85,7 @@ float currLat = 0, currLon = 0;
 int heartbeat = 0;
 uint32_t timer = millis();
 
-const int LED_PINS = {24, 25, 26};
+const int LED_PINS[] = {24, 25, 26};
 
 
 /////////////////////////// GPS INIT/////////////////////////
@@ -327,10 +327,12 @@ void motor_update () {
 
   Kp = 1;
   Kd = 0;
-  Ki = 1;
+  Ki = 0;
   //desiredTracker();
   //int desiredX = 0;
-  currE = desiredX - relativeX - zeroX;
+  currE = desiredX - relativeX;
+  Serial.print("CURRENT ERROR:");
+  Serial.println(currE);
   prevED = prevE - currE;
   prevEI = prevEI + currE;
   
@@ -469,10 +471,10 @@ void radio_update() {
 
   char reply[20];
 //  Serial2.write("Ground Station: ");
-  Serial.print("Sending val: ");
+//  Serial.print("Sending val: ");
   sprintf(reply, "F:%d H:%d X:%d Y:%d Z:%d ",feedback, heartbeat, orientX, orientY, orientZ);
   Serial2.write(reply);
-  Serial.print(reply);
+//  Serial.print(reply);
   char reply2[20];
   sprintf(reply2, "A:%d P:%d T:%d ", alt, pressure, temp);
   Serial2.write(reply2);
@@ -482,7 +484,7 @@ void radio_update() {
   Serial2.write(reply3);
   Serial.println(reply3);
   char reply4[30];
-  sprintf(reply4, "Currently Tracking: %d, Desired Track is: %d",newTrack,desiredX);
+  sprintf(reply4, "Currently Tracking: %d, Desired Track is: %f",inTrigger,desiredX);
   Serial2.write(reply4);
   Serial.println(reply4);
   dataFile = SD.open("datalog.txt", FILE_WRITE);
@@ -644,6 +646,9 @@ void setLED(int x, bool isOn) {
 /////////////////////////////////////////////////////////////
 void setup() {
   delay(3000);
+  pinMode(24,OUTPUT);
+  pinMode(25,OUTPUT);
+  pinMode(26,OUTPUT);
 
   Serial.begin(115200);
   delay(1000);
@@ -659,7 +664,7 @@ void setup() {
   dataFile = SD.open("datalog.txt", FILE_WRITE);
 
   radio_init();
-  camera_setup();
+  //camera_setup();
   sensor_init();
   motor_init();
 
@@ -672,7 +677,9 @@ void setup() {
   trackArray[5]=180;
 
   totalTrackTime = 5;
-
+  newTrack = 1;
+  setLED(0,true);
+  delay(3000);
 
 }
 
@@ -681,6 +688,7 @@ long lasttime = millis();
 long mytime = millis();
 long diff = 0;
 int toggle = 1;
+
 void loop() {
   
   track_trigger(); // trigger
@@ -694,7 +702,7 @@ void loop() {
   lasttime = millis();
   Serial.print("Time per loop: ");
   Serial.println(diff);
-  camera_update();
+  //camera_update();
 
 
   // Here we update the sensors
