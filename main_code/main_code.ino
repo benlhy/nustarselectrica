@@ -39,8 +39,8 @@ Adafruit_BMP280 bme; // I2C
 Adafruit_BNO055 bno = Adafruit_BNO055(55);
 
 TinyGPSPlus gps; // define tinygps as gps
-//Wire.setClock(400000);
 
+//PID?
 int prevE = 0;
 int prevEI = 0;
 int prevED = 0;
@@ -51,6 +51,9 @@ int controlu = 0;
 int orientX = 0;
 int orientY = 0;
 int orientZ = 0;
+
+int zzz = 0;
+
 
 int relativeX = 0;
 int modifierX = 0;
@@ -63,9 +66,6 @@ int trackArray[10];
 int totalTrackTime = 0;
 int heightReachedHuh = 1;
 
-float collectX = 0;
-float collectY = 0;
-float collectZ = 0;
 float zeroX=0;
 float zeroY=0;
 float zeroZ=0;
@@ -115,70 +115,17 @@ void gps_update() {
   currLon = gps.location.lng();
   currLat = gps.location.lat();
 
-  /*
-    Serial.println(gps.location.lat(), 6); // Latitude in degrees (double)
-    Serial.println(gps.location.lng(), 6); // Longitude in degrees (double)
-    Serial.print(gps.location.rawLat().negative ? "-" : "+");
-    Serial.println(gps.location.rawLat().deg); // Raw latitude in whole degrees
-    Serial.println(gps.location.rawLat().billionths);// ... and billionths (u16/u32)
-    Serial.print(gps.location.rawLng().negative ? "-" : "+");
-    Serial.println(gps.location.rawLng().deg); // Raw longitude in whole degrees
-    Serial.println(gps.location.rawLng().billionths);// ... and billionths (u16/u32)
-    Serial.println(gps.date.value()); // Raw date in DDMMYY format (u32)
-    Serial.println(gps.date.year()); // Year (2000+) (u16)
-    Serial.println(gps.date.month()); // Month (1-12) (u8)
-    Serial.println(gps.date.day()); // Day (1-31) (u8)
-    Serial.println(gps.time.value()); // Raw time in HHMMSSCC format (u32)
-    Serial.println(gps.time.hour()); // Hour (0-23) (u8)
-    Serial.println(gps.time.minute()); // Minute (0-59) (u8)
-    Serial.println(gps.time.second()); // Second (0-59) (u8)
-    Serial.println(gps.time.centisecond()); // 100ths of a second (0-99) (u8)
-    Serial.println(gps.speed.value()); // Raw speed in 100ths of a knot (i32)
-    Serial.println(gps.speed.knots()); // Speed in knots (double)
-    Serial.println(gps.speed.mph()); // Speed in miles per hour (double)
-    Serial.println(gps.speed.mps()); // Speed in meters per second (double)
-    Serial.println(gps.speed.kmph()); // Speed in kilometers per hour (double)
-    Serial.println(gps.course.value()); // Raw course in 100ths of a degree (i32)
-    Serial.println(gps.course.deg()); // Course in degrees (double)
-    -Serial.println(gps.altitude.value()); // Raw altitude in centimeters (i32)
-    Serial.println(gps.altitude.meters()); // Altitude in meters (double)
-    Serial.println(gps.altitude.miles()); // Altitude in miles (double)
-    Serial.println(gps.altitude.kilometers()); // Altitude in kilometers (double)
-    Serial.println(gps.altitude.feet()); // Altitude in feet (double)
-  */
   Serial.print("Number of satellites in use   ");  Serial.println(gps.satellites.value()); // Number of satellites in use (u32)
-  /*
-    Serial.println(gps.hdop.value()); // Horizontal Dim. of Precision (100ths-i32)
-  */
-
-
-
-  /* gps.f_get_position(&flat, &flon, &age); //
-    Serial.print(flon,6); //
-    desimalt
-    Serial.print(", "); //
-    Serial.print(flat,6); //
-    grader desimalt
-    Serial.print(", "); //
-    Serial.print(gps.f_altitude(), 2); //
-  */
   Serial.println();
   
 }
 
-static void encodeGPS()
+void encodeGPS()
 {
-  /*
-  unsigned long start = millis(); 
-  do // 
-  {
-    while (mySerial.available()) gps.encode(mySerial.read());
-  }
-  while (millis() - start < ms);
-   */
   if (mySerial.available()) {
     gps.encode(mySerial.read());
   }
+  zzz++; //TODO: Remove
 }
 
 
@@ -187,7 +134,6 @@ static void encodeGPS()
 void sensor_init() {
   if (!bno.begin())
   {
-    /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while (1);
   }
@@ -196,35 +142,19 @@ void sensor_init() {
     Serial.println("Could not find a valid BMP280 sensor, check wiring!");
     while (1);
   }
+  //Set altitude at ground
   for (int i =0; i<10; i++){
     baseAlt = baseAlt + bme.readAltitude(1000);
   }
   baseAlt = baseAlt/10;
-
-  collectX = 0;
-  collectY = 0;
-  collectZ = 0;
-  // The data will be very noisy, so we have to apply a moving average
-  for (int i = 0; i < 5; i++) {
-    sensors_event_t event;
-    bno.getEvent(&event);
-    collectX = event.orientation.x + collectX;
-    collectY = event.orientation.y + collectY;
-    collectZ = event.orientation.z + collectZ;
-  }
-  zeroX = collectX / 5;
-  zeroY = collectY / 5;
-  zeroZ = collectZ / 5;
-
-  
-  
 }
 
 
 void sensor_update() {
-  collectX = 0;
-  collectY = 0;
-  collectZ = 0;
+  float collectX = 0;
+  float collectY = 0;
+  float collectZ = 0;
+  int orientX, orientY, orientZ;
   // The data will be very noisy, so we have to apply a moving average
   for (int i = 0; i < 5; i++) {
     sensors_event_t event;
@@ -236,7 +166,7 @@ void sensor_update() {
   orientX = collectX / 5;
   orientY = collectY / 5;
   orientZ = collectZ / 5;
-  
+
   // Relative
   changeX = lastX - orientX;
   if (changeX>180){
@@ -252,7 +182,7 @@ void sensor_update() {
 
 
 
-  
+
   temp = bme.readTemperature();
   pressure = bme.readPressure();
   alt = bme.readAltitude(1000)-baseAlt;
@@ -262,20 +192,6 @@ void sensor_update() {
   Serial.print(' ');
   Serial.print(orientZ);
   Serial.println(' ');
-  
-  /*
-  Serial.print("Temperature = ");
-  Serial.print(temp);
-  Serial.println(" *C");
-
-  Serial.print("Pressure = ");
-  Serial.print(pressure);
-  Serial.println(" Pa");
-
-  Serial.print("Approx altitude = ");
-  Serial.print(alt); // this should be adjusted to your local forcase
-  Serial.println(" m");
-  */
 }
 
 
@@ -324,7 +240,6 @@ void motor_init() {
 }
 // update the pwm signal based on input from sensors
 void motor_update () {
-
   Kp = 1;
   Kd = 0;
   Ki = 0;
@@ -345,54 +260,34 @@ void motor_update () {
   }
   controlu = Kp * currE + Kd * prevED + Ki * prevE;
   prevE = currE;
-  if (controlu > 255) {
-    setLED(0, true);
-    setLED(1, false);
-    setLED(2, false);
+    if (controlu == 0) {
+        setLED({0, 1, 0});
+        digitalWrite(A8, 0);
+        digitalWrite(A9, 0);
+        analogWrite(A7, controlu);
+        Serial.print("Maintaining position!");
+    } else if (controlu > 255) {
+        setLED({0, 0, 1});
     digitalWrite(A8, 1);
     digitalWrite(A9, 0);
     analogWrite(A7, 255);
-  }
-  else if ((controlu < 0) && (controlu > -255)) {
+  } else if (controlu > 0) {
+      setLED({0, 0, 1});
+      digitalWrite(A8, 1);
+      digitalWrite(A9, 0);
+      analogWrite(A7, controlu);
+  } else if (controlu > -255) {
     // if we have a negative controlu
-    setLED(0, true);
-    setLED(1, false);
-    setLED(2, false);
+    setLED({1, 0, 0});
     digitalWrite(A8, 0);
     digitalWrite(A9, 1);
     analogWrite(A7, -controlu); //make it positive
-  }
-  else if (controlu < -255) {
-    setLED(0, false);
-    setLED(1, false);
-    setLED(2, true);
+  } else {
+    setLED({1, 0, 0});
     digitalWrite(A8, 0);
     digitalWrite(A9, 1);
     analogWrite(A7, 255);
   }
-  else if (controlu > 0 && controlu < 255) {
-    setLED(0, false);
-    setLED(1, false);
-    setLED(2, true);
-    digitalWrite(A8, 1);
-    digitalWrite(A9, 0);
-    analogWrite(A7, controlu);
-    
-  }
-  else if (controlu == 0) {
-    setLED(0, false);
-    setLED(1, true);
-    setLED(2, false);
-    digitalWrite(A8, 0);
-    digitalWrite(A9, 0);
-    analogWrite(A7, controlu);
-    Serial.print("Maintaining position!");
-  }
-
-//  digitalWrite(A8, 1);
-//  digitalWrite(A9, 0);
-//  analogWrite(A7, 255);
-  
 }
 
 
@@ -580,6 +475,9 @@ int launchCounter = 0;
 int accLaunchFlag = 0;
 long launchStartTimer = 0;
 
+
+//Rocket acceleration tracker
+
 void track_trigger() {
 
     imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER); // get acceler
@@ -631,16 +529,15 @@ void track_trigger() {
 ///////////////////////////////////////////////////////////////
 //long lasttime = millis();
 
-void setLED(int x, bool isOn) {
-  if (x == 0 || x == 1 || x == 2) {
-    if (isOn) {
-      digitalWrite(LED_PINS[x], HIGH);
-    } else {
-      digitalWrite(LED_PINS[x], LOW);
+//TODO: Document
+void setLED(bool leds[]) {
+    for (int i = 0; i < 3; i++) {
+        if (leds[i]) {
+            digitalWrite(LED_PINS[i], HIGH);
+        } else {
+            digitalWrite(LED_PINS[i], LOW);
+        }
     }
-  } else {
-    Serial.println("Unexpected LED!");
-  }
 }
 
 /////////////////////////////////////////////////////////////
@@ -678,7 +575,7 @@ void setup() {
 
   totalTrackTime = 5;
   newTrack = 1;
-  setLED(0,true);
+  setLED({true, false, false});
   delay(3000);
 
 }
