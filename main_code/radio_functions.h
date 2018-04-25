@@ -45,71 +45,31 @@ bool radio_init() {
 
   bool reply = WAITFORREPLY;
   uint8_t wait_time = WAITTIME;
-  if (reply) {
-    while (wait_time > 0) {
-      char radiopacket[12] = "Test packet";
-      rf95.send((uint8_t *)radiopacket, 12);
-      rf95.waitPacketSent();
-      uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-      uint8_t len = sizeof(buf);
-      if (rf95.waitAvailableTimeout(1000))
-      {
-        // Should be a reply message for us now
-        if (rf95.recv(buf, &len))
-        {
-          digitalWrite(LED, HIGH);
-          Serial.print("Got reply: ");
-          Serial.println((char*)buf);
-          Serial.print("RSSI: ");
-          Serial.println(rf95.lastRssi(), DEC);
-          digitalWrite(LED, LOW);
-          return true;
-        }
-        else
-        {
-          Serial.println("Receive failed");
-        }
-      }
-      else
-      {
-        Serial.println("No reply, is there a listener around?");
-        wait_time = wait_time + 1;
-      }
+  char radiopacket[12] = "Test packet";
+  rf95.send((uint8_t *)radiopacket, 12);
+  rf95.waitPacketSent();
+  uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
+  uint8_t len = sizeof(buf);
+  if (rf95.waitAvailableTimeout(1000))
+    // Should be a reply message for us now
+    if (rf95.recv(buf, &len))
+    {
+      digitalWrite(LED, HIGH);
+      Serial.print("Got reply: ");
+      Serial.println((char*)buf);
+      Serial.print("RSSI: ");
+      Serial.println(rf95.lastRssi(), DEC);
+      digitalWrite(LED, LOW);
     }
-    return false;
-  }
+    else
+    {
+      Serial.println("Receive failed");
+    }
 
-
-  // Okay if we are not waiting on a reply, skip an infinite loop
-  // and go straight to a single test
-  else
-  {
-    char radiopacket[12] = "Test packet";
-    rf95.send((uint8_t *)radiopacket, 12);
-    rf95.waitPacketSent();
-    uint8_t buf[RH_RF95_MAX_MESSAGE_LEN];
-    uint8_t len = sizeof(buf);
-    if (rf95.waitAvailableTimeout(1000))
-      // Should be a reply message for us now
-      if (rf95.recv(buf, &len))
-      {
-        digitalWrite(LED, HIGH);
-        Serial.print("Got reply: ");
-        Serial.println((char*)buf);
-        Serial.print("RSSI: ");
-        Serial.println(rf95.lastRssi(), DEC);
-        digitalWrite(LED, LOW);
-      }
-      else
-      {
-        Serial.println("Receive failed");
-      }
-  
-  else
-  {
-    Serial.println("No reply, is there a listener around?");
-  }
-  return true; //send true regardless if we don't care about establishing a comms channel.
+else
+{
+  Serial.println("No reply, is there a listener around?");
 }
+  return true;
 }
 

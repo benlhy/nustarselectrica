@@ -48,13 +48,6 @@ int currE = 0;
 int controlu = 0;
 
 
-int orientX = 0;
-int orientY = 0;
-int orientZ = 0;
-
-int zzz = 0;
-
-
 int relativeX = 0;
 int modifierX = 0;
 int changeX = 0;
@@ -69,11 +62,6 @@ int heightReachedHuh = 1;
 float zeroX=0;
 float zeroY=0;
 float zeroZ=0;
-
-int temp = 0;
-int pressure = 0;
-int alt = 0;
-int baseAlt = 0;
 
 float desiredX = 0;
 float desiredY = 0;

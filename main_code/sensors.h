@@ -23,22 +23,32 @@ namespace nustars {
     };
 
     /**
-     * The Adafruit BNO, the accelerometer
+     * Adafruit BNO, the accelerometer
      */
     class Accelerometer: Sensor {
     private:
         Adafruit_BNO55 bno;
         int lastX;
-        int orientation;
+        int orientation[];
         int baseAlt;
     public:
         Accelerometer();
-        int orientation(int axis);
+        int getOrientation(int axis);
+        int getAcceleration(int axis);
     };
 
+    /**
+     * Adafruit BME, the altimeter
+     */
     class Altimeter: Sensor {
+    private:
+        Adafruit_BMP280 bme;
+        int temp, pressure, alt, baseAlt;
+        void setBaseAlt();
     public:
         Altimeter();
-        int altitude;
+        int getTemp();
+        int getPressure();
+        int getAltitude();
     };
 }
