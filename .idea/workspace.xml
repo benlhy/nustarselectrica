@@ -14,9 +14,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a150ada-5541-4979-ae25-c43216bc737c" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/main_code/sensors.cpp" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/main_code/sensors.h" />
       <change beforePath="$PROJECT_DIR$/main_code/main_code.ino" afterPath="$PROJECT_DIR$/main_code/main_code.ino" />
+      <change beforePath="$PROJECT_DIR$/main_code/sensors.h" afterPath="$PROJECT_DIR$/main_code/sensors.h" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,8 +30,8 @@
       <file leaf-file-name="main_code.ino" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_code/main_code.ino">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1766">
-              <caret line="191" column="20" lean-forward="true" selection-start-line="191" selection-start-column="20" selection-end-line="191" selection-end-column="20" />
+            <state relative-caret-position="236">
+              <caret line="417" column="2" lean-forward="true" selection-start-line="417" selection-start-column="2" selection-end-line="417" selection-end-column="2" />
               <folding />
             </state>
           </provider>
@@ -41,8 +40,8 @@
       <file leaf-file-name="sensors.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main_code/sensors.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="8" lean-forward="true" selection-start-line="6" selection-start-column="8" selection-end-line="8" selection-end-column="24" />
+            <state relative-caret-position="187">
+              <caret line="11" column="25" lean-forward="true" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -51,8 +50,8 @@
       <file leaf-file-name="sensors.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main_code/sensors.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+            <state relative-caret-position="425">
+              <caret line="25" column="42" lean-forward="false" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -81,6 +80,7 @@
       <find>lastX</find>
       <find>base</find>
       <find>bme</find>
+      <find>baseAlt</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -89,10 +89,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/main_code/main_code.ino" />
         <option value="$PROJECT_DIR$/main_code/sensor.cpp" />
         <option value="$PROJECT_DIR$/main_code/sensors.cpp" />
         <option value="$PROJECT_DIR$/main_code/sensors.h" />
+        <option value="$PROJECT_DIR$/main_code/main_code.ino" />
       </list>
     </option>
   </component>
@@ -103,7 +103,7 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="520" />
     <option name="y" value="157" />
     <option name="width" value="949" />
@@ -173,16 +173,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1524616958698</updated>
-      <workItem from="1524616960152" duration="3136000" />
+      <workItem from="1524616960152" duration="3741000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3136000" />
+    <option name="totallyTimeSpent" value="3741000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.145625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -223,26 +222,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_code/sensors.cpp">
+    <entry file="file://$PROJECT_DIR$/main_code/sensors.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="8" lean-forward="true" selection-start-line="6" selection-start-column="8" selection-end-line="8" selection-end-column="24" />
+        <state relative-caret-position="425">
+          <caret line="25" column="42" lean-forward="false" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_code/sensors.h">
+    <entry file="file://$PROJECT_DIR$/main_code/sensors.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+        <state relative-caret-position="187">
+          <caret line="11" column="25" lean-forward="true" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main_code/main_code.ino">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1766">
-          <caret line="191" column="20" lean-forward="true" selection-start-line="191" selection-start-column="20" selection-end-line="191" selection-end-column="20" />
+        <state relative-caret-position="236">
+          <caret line="417" column="2" lean-forward="true" selection-start-line="417" selection-start-column="2" selection-end-line="417" selection-end-column="2" />
           <folding />
         </state>
       </provider>

@@ -412,7 +412,7 @@ void radio_update() {
       Serial.println("error opening datalog.txt");
       delay(3000);
     }
-    Serial.println("shit");
+    Serial.println("shit"); //lol
     delay(3000);
   }
   
