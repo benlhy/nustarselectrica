@@ -8,6 +8,10 @@ set(SOURCE_FILES
         pid.h
         radio_functions.h
         sensors.cpp
-        sensors.h)
+        sensors.h
+        storage.cpp
+        storage.h
+
+        )
 
 add_executable(main_code ${SOURCE_FILES})

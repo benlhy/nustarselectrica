@@ -1,1 +1,1 @@
-/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/main_code.dir/sensors.cpp.o  -o main_code.exe -Wl,--out-implib,libmain_code.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/main_code.dir/sensors.cpp.o CMakeFiles/main_code.dir/storage.cpp.o  -o main_code.exe -Wl,--out-implib,libmain_code.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

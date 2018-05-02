@@ -150,6 +150,33 @@ sensors.cpp.s:
 	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/sensors.cpp.s
 .PHONY : sensors.cpp.s
 
+storage.o: storage.cpp.o
+
+.PHONY : storage.o
+
+# target to build an object file
+storage.cpp.o:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/storage.cpp.o
+.PHONY : storage.cpp.o
+
+storage.i: storage.cpp.i
+
+.PHONY : storage.i
+
+# target to preprocess a source file
+storage.cpp.i:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/storage.cpp.i
+.PHONY : storage.cpp.i
+
+storage.s: storage.cpp.s
+
+.PHONY : storage.s
+
+# target to generate assembly for a file
+storage.cpp.s:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/storage.cpp.s
+.PHONY : storage.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -162,6 +189,9 @@ help:
 	@echo "... sensors.o"
 	@echo "... sensors.i"
 	@echo "... sensors.s"
+	@echo "... storage.o"
+	@echo "... storage.i"
+	@echo "... storage.s"
 .PHONY : help
 
 

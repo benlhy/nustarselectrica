@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/main_code.dir/sensors.cpp.o"
+  "CMakeFiles/main_code.dir/storage.cpp.o"
   "main_code.pdb"
   "main_code.exe"
   "libmain_code.dll.a"

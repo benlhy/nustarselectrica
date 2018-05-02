@@ -113,7 +113,6 @@ void encodeGPS()
   if (mySerial.available()) {
     gps.encode(mySerial.read());
   }
-  zzz++; //TODO: Remove
 }
 
 

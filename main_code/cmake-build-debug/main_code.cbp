@@ -95,6 +95,12 @@
 		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/sensors.h">
 			<Option target="main_code"/>
 		</Unit>
+		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/storage.cpp">
+			<Option target="main_code"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/storage.h">
+			<Option target="main_code"/>
+		</Unit>
 		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>

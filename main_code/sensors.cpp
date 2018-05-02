@@ -1,13 +1,4 @@
 #include "sensors.h"
-#ifndef _DEF_BNO
-#define _DEF_BNO
-#include <Adafruit_BNO055.h>
-#endif
-
-#ifndef  _DEF_BMP
-#define _DEF_BMP
-#include <Adafruit_BMP280.h>
-#endif
 
 namespace nustars {
 
@@ -142,6 +133,38 @@ namespace nustars {
     //get pressure
     int Altimeter::getPressure() {
         return pressure;
+    }
+
+    GPS::GPS() {
+        ada_gps = new Adafruit_GPS(&Serial1);
+        lat = 0;
+        lng = 0;
+        alt = 0;
+    }
+
+    void GPS::tick() {
+        while (Serial1.available()) //if die use >0
+            tgps.encode(Serial1.read());
+        lat = tgps.location.lat();
+        lng = tgps.location.lng();
+        alt = tgps.altitude.meters();
+        numSat = tgps.satellites.value();
+    }
+
+    float GPS::getAlt() {
+        return alt;
+    }
+
+    float GPS::getLat() {
+        return lat;
+    }
+
+    float GPS::getLng() {
+        return lng;
+    }
+
+    int GPS::getSat() {
+        return numSat;
     }
 } //END NAMESPACE
 

@@ -8,6 +8,11 @@
 #include <Adafruit_BMP280.h>
 #endif
 
+#include <string>
+#include <Adafruit_GPS.h> //TODO: DEFINE RIGHT
+#include <SoftwareSerial.h>
+#include <TinyGPS++.h>
+
 namespace nustars {
     static const int X_AXIS = 0;
     static const int Y_AXIS = 1;
@@ -47,5 +52,20 @@ namespace nustars {
         int getTemp();
         int getPressure();
         int getAltitude();
+    };
+
+    class GPS: public Sensor {
+    public:
+        Adafruit_GPS* ada_gps;
+        TinyGPSPlus tgps;
+        GPS();
+        void tick();
+        float getAlt();
+        float getLat();
+        float getLng();
+        int getSat();
+    private:
+        float alt, lat, lng;
+        int numSat;
     };
 }
