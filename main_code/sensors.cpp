@@ -1,5 +1,13 @@
 #include "sensors.h"
+#ifndef _DEF_BNO
+#define _DEF_BNO
+#include <Adafruit_BNO055.h>
+#endif
 
+#ifndef  _DEF_BMP
+#define _DEF_BMP
+#include <Adafruit_BMP280.h>
+#endif
 
 namespace nustars {
 
@@ -10,6 +18,7 @@ namespace nustars {
     Accelerometer::Accelerometer() {
         bno = Adafruit_BNO055(55); //I2C address, probably.
         lastX = 0;
+        modifierX = 0;
         orientation = new int[3];
         if (!bno.begin()) {
             Serial.print(
@@ -34,20 +43,21 @@ namespace nustars {
             collect[1] += event.orientation.y;
             collect[2] += event.orientation.z;
         }
-        orientation[0] = collectX / NUM_SAMPLES;
-        orientation[1] = collectY / NUM_SAMPLES;
-        orientation[2] = collectZ / NUM_SAMPLES;
+        orientation[0] = (int)(collect[0] / NUM_SAMPLES);
+        orientation[1] = (int)(collect[1] / NUM_SAMPLES);
+        orientation[2] = (int)(collect[2] / NUM_SAMPLES);
 
         // Relative
-        changeX = lastX - orientX;
-        if (changeX > 180) {
+        int dX = lastX - orientation[0]; //TODO: Check logic of the order of subtraction
+        if (dX > 180) {
             // crossover from 360 to 0
-            modifierX = modifierX + 360;
-        } else if (changeX < -180) {
-            modifierX = modifierX - 360;
+            modifierX += 360;
+        } else if (dX < -180) {
+            modifierX -= 360;
         }
-        relativeX = orientX + modifierX; // now we use relative X to calculate
-        lastX = orientX;
+        //TODO:implement
+        //relativeX = orientation[0] + modifierX; // now we use relative X to calculate
+        lastX = orientation[0];
     }
 
     /**
@@ -57,9 +67,9 @@ namespace nustars {
      */
     int Accelerometer::getOrientation(int axis) {
         switch(axis) {
-            case X_AXIS: return orientation[0];
-            case Y_AXIS: return orientation[1];
-            case Z_AXIS: return orientation[2];
+            case 0: return orientation[0];
+            case 1: return orientation[1];
+            case 2: return orientation[2];
             default: return -1; //TODO: Throw an exception
         }
     }
@@ -70,10 +80,11 @@ namespace nustars {
      * @return The value of the acceleration on requested axis
      */
     int Accelerometer::getAcceleration(int axis) {
+        imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
         switch(axis) {
-            case X_AXIS: return bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER).x;
-            case Y_AXIS: return bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER).y;
-            case Z_AXIS: return bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER).z;
+            case 0: return acc.x();
+            case 1: return acc.y();
+            case 2: return acc.z();
             default: return -1; //TODO: Throw an exception
         }
     }
