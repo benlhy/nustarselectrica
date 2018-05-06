@@ -9,7 +9,7 @@
 #endif
 
 #include <string>
-#include <Adafruit_GPS.h> //TODO: DEFINE RIGHT
+#include <Adafruit_GPS.h> //TODO: plz add include guards
 #include <SoftwareSerial.h>
 #include <TinyGPS++.h>
 
@@ -21,6 +21,7 @@ namespace nustars {
     class Sensor {
         virtual void tick();
     };
+
     /**
      * Adafruit BNO, the accelerometer
      */
@@ -33,7 +34,7 @@ namespace nustars {
         int baseAlt;
     public:
         Accelerometer();
-        void tick();
+        void tick() override;
         int getOrientation(int axis);
         int getAcceleration(int axis);
     };
@@ -48,7 +49,7 @@ namespace nustars {
         void setBaseAlt();
     public:
         Altimeter();
-        void tick();
+        void tick() override;
         int getTemp();
         int getPressure();
         int getAltitude();

@@ -23,7 +23,7 @@ void record(String x) {
     Serial.println(x);
 
 }
-
+int lastTime = 0;
 void setup() {
     //PIN SETUP
     pinMode(13, OUTPUT);
@@ -59,7 +59,9 @@ void loop() {
   Serial2.printf("NumSat: %d, LNG: %f\n", gps->getSat(), gps->getLng());
   //Serial2.printf("X: %3d, Y: %3d, Z: %3d\n", x, y, z);
   //radio->send("TEST");
-
-  delay(10);
+  long thisTime = millis();
+  //Serial.println(thisTime - lastTime);
+  lastTime = thisTime;
+  //delay(10);
 }
 

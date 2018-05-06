@@ -2,11 +2,11 @@
 
 namespace nustars {
     PID::PID() {
-        desiredX = 0;
-        modX = 0;
-        previousError = 0;
-        previousX = 0;
-        accumulatedError = 0;
+        desiredX = 0; //the desired rotation
+        modX = 0; //enable values for position outside the bounds [0, 360]
+        previousError = 0; //the previous (x - desiredX); (note: x=(modX + sensor_x)
+        previousX = 0; //previous sensor_x
+        accumulatedError = 0; //questionable cumulative integration
     }
 
     /**
@@ -15,46 +15,60 @@ namespace nustars {
      */
     void PID::tick(int sensor_x) {
         int dx = previousX - sensor_x;
+        //handles going past the 0 <-> 359 bound
         if (dx >= 180) modX += 360;
         else if (dx <= -180) modX -= 360;
         previousX = sensor_x;
         currentError = sensor_x + modX - desiredX;
 
-        accumulatedError += currentError;
+        accumulatedError += currentError; //shifty integration :)
         if (accumulatedError > ERROR_CAP) { //limit integrating effects
             accumulatedError = ERROR_CAP;
         } else if (accumulatedError < -ERROR_CAP) {
             accumulatedError = -ERROR_CAP;
         }
-        int derivError = previousError - currentError;
+        int derivError = previousError - currentError; //shifty differentiation :)
 
-        //PID
+        //PID MAGIC
         double pidFactor = P * currentError + D * derivError + I * accumulatedError;
 
-        double analogOut;
+        int analogOut;
+        //output is limited to [-255, 255]
         if (pidFactor > 255) {
             analogOut = 255;
         } else if (pidFactor < -255) {
             analogOut = -255;
         } else {
-            analogOut = pidFactor;
+            analogOut = (int)pidFactor;
         }
         Serial.println(analogOut);
         //Serial.printf("Aout: %3d; cE: %d; SeX: %d\n", analogOut, currentError, sensor_x + modX);
+
         if (currentError < ZERO_TOLERANCE && currentError > ZERO_TOLERANCE) {
+            //halt motor
             digitalWrite(A8, 0);
             digitalWrite(A9, 0);
-            analogWrite(A7, 0); //Maybe change this back to an actual value
-            accumulatedError = 0;
+            analogWrite(A7, 0);
+            accumulatedError = 0; //reset integration
         } else if (pidFactor > 0) {
+            //move the motor
             digitalWrite(A8, 1);
             digitalWrite(A9, 0);
             analogWrite(A7, analogOut);
         } else {
+            //also move the motor
             digitalWrite(A8, 0);
             digitalWrite(A9, 1);
             analogWrite(A7, -analogOut);
         }
         previousError = currentError;
+    }
+
+    /**
+     * Sets the desired value for the x rotation
+     * @param x The desired value for x rotation
+     */
+    void PID::setDesiredX(int x) {
+        desiredX = x;
     }
 }

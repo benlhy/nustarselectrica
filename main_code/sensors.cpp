@@ -6,10 +6,11 @@ namespace nustars {
      ***********************
      **********************/
 
+    /**
+     * Initialize the BNO
+     */
     Accelerometer::Accelerometer() {
         bno = Adafruit_BNO055(55); //I2C address, probably.
-        lastX = 0;
-        modifierX = 0;
         orientation = new int[3];
         if (!bno.begin()) {
             Serial.print(
@@ -37,11 +38,6 @@ namespace nustars {
         orientation[0] = (int)(collect[0] / NUM_SAMPLES);
         orientation[1] = (int)(collect[1] / NUM_SAMPLES);
         orientation[2] = (int)(collect[2] / NUM_SAMPLES);
-
-        // Relative
-        //TODO:implement
-        //relativeX = orientation[0] + modifierX; // now we use relative X to calculate
-        lastX = orientation[0];
     }
 
     /**
@@ -111,7 +107,7 @@ namespace nustars {
         alt = bme.readAltitude(1000) - baseAlt;
     }
 
-    //Altimeter getters--
+    //Altimeter getters
 
     //get temperature
     int Altimeter::getTemp() {
@@ -128,6 +124,9 @@ namespace nustars {
         return pressure;
     }
 
+    /**
+     * Say hello to the GPS
+     */
     GPS::GPS() {
         ada_gps = new Adafruit_GPS(&Serial1);
         lat = 0;
@@ -135,6 +134,9 @@ namespace nustars {
         alt = 0;
     }
 
+    /**
+     * Uses TinyGPS to read from GPS serial and encode information into usable variables
+     */
     void GPS::tick() {
         while (Serial1.available()) //if die use >0
             tgps.encode(Serial1.read());
@@ -144,6 +146,7 @@ namespace nustars {
         numSat = tgps.satellites.value();
     }
 
+    //ALL OF THE GETTERS
     float GPS::getAlt() {
         return alt;
     }
