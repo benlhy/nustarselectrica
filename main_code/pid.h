@@ -1,24 +1,18 @@
-#ifndef PID_H
-#define PID_H
-#include "Datalogger.h"
+#include "Arduino.h";
 
-
-// Calculates the PID output from current state,
-int calculatePID();
-
-//outputs the PID output to the motor, sanitizing as necessary
-void outputMotor(int power);
-
-//Calls the other functions in sequence to get an output to the motor
-void callThemAll(uint32_t timestamp);
-
-//generates a linear trajectory error path for us to follow
-float calculateError();
-
-//used to reset the current velocity of motor to zero
-int resetVelocity();
-
-//resets controller
-void resetController();
-
-#endif
+namespace nustars {
+    class PID {
+    private:
+        int desiredX, previousX, modX, previousError, currentError, accumulatedError;
+        //accumulatedError: sloppy integration of the error
+        const double P = 2;
+        const double I = .2;
+        const double D = 2; //TODO: Implement
+        const int ZERO_TOLERANCE = 5; //+ or - from desiredX to shut off the motor
+        const int ERROR_CAP = 255; //limiting accumulated error
+    public:
+        PID(); //TODO: Add pin options
+        void tick(int x); //do PID stuff
+        void setDesiredX(int x);
+    };
+}

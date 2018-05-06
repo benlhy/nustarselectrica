@@ -3,8 +3,8 @@
 namespace nustars {
     class Storage {
     public:
-        Storage(String);
-        void write(String);
+        Storage(String file);
+        void write(String msg);
         int* read(int& lng);
 
     private:

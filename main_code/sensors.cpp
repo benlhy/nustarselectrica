@@ -39,13 +39,6 @@ namespace nustars {
         orientation[2] = (int)(collect[2] / NUM_SAMPLES);
 
         // Relative
-        int dX = lastX - orientation[0]; //TODO: Check logic of the order of subtraction
-        if (dX > 180) {
-            // crossover from 360 to 0
-            modifierX += 360;
-        } else if (dX < -180) {
-            modifierX -= 360;
-        }
         //TODO:implement
         //relativeX = orientation[0] + modifierX; // now we use relative X to calculate
         lastX = orientation[0];

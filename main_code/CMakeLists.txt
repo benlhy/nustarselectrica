@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(SOURCE_FILES
         main_code.ino
-        pid.h
         radio_functions.h
         sensors.cpp
         sensors.h
         storage.cpp
         storage.h
-
+        pid.cpp
+        pid.h
         )
 
 add_executable(main_code ${SOURCE_FILES})
