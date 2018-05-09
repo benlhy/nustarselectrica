@@ -4,6 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.cpp" "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles/main_code.dir/pid.cpp.o"
+  "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.cpp" "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles/main_code.dir/radio.cpp.o"
   "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/sensors.cpp" "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles/main_code.dir/sensors.cpp.o"
   "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/storage.cpp" "/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles/main_code.dir/storage.cpp.o"
   )

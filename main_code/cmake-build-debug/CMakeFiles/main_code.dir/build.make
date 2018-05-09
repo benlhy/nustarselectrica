@@ -105,19 +105,71 @@ CMakeFiles/main_code.dir/storage.cpp.o.provides: CMakeFiles/main_code.dir/storag
 CMakeFiles/main_code.dir/storage.cpp.o.provides.build: CMakeFiles/main_code.dir/storage.cpp.o
 
 
+CMakeFiles/main_code.dir/pid.cpp.o: CMakeFiles/main_code.dir/flags.make
+CMakeFiles/main_code.dir/pid.cpp.o: ../pid.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main_code.dir/pid.cpp.o"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main_code.dir/pid.cpp.o -c /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.cpp
+
+CMakeFiles/main_code.dir/pid.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main_code.dir/pid.cpp.i"
+	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.cpp > CMakeFiles/main_code.dir/pid.cpp.i
+
+CMakeFiles/main_code.dir/pid.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main_code.dir/pid.cpp.s"
+	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.cpp -o CMakeFiles/main_code.dir/pid.cpp.s
+
+CMakeFiles/main_code.dir/pid.cpp.o.requires:
+
+.PHONY : CMakeFiles/main_code.dir/pid.cpp.o.requires
+
+CMakeFiles/main_code.dir/pid.cpp.o.provides: CMakeFiles/main_code.dir/pid.cpp.o.requires
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/pid.cpp.o.provides.build
+.PHONY : CMakeFiles/main_code.dir/pid.cpp.o.provides
+
+CMakeFiles/main_code.dir/pid.cpp.o.provides.build: CMakeFiles/main_code.dir/pid.cpp.o
+
+
+CMakeFiles/main_code.dir/radio.cpp.o: CMakeFiles/main_code.dir/flags.make
+CMakeFiles/main_code.dir/radio.cpp.o: ../radio.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main_code.dir/radio.cpp.o"
+	/usr/bin/c++.exe  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main_code.dir/radio.cpp.o -c /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.cpp
+
+CMakeFiles/main_code.dir/radio.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main_code.dir/radio.cpp.i"
+	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.cpp > CMakeFiles/main_code.dir/radio.cpp.i
+
+CMakeFiles/main_code.dir/radio.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main_code.dir/radio.cpp.s"
+	/usr/bin/c++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.cpp -o CMakeFiles/main_code.dir/radio.cpp.s
+
+CMakeFiles/main_code.dir/radio.cpp.o.requires:
+
+.PHONY : CMakeFiles/main_code.dir/radio.cpp.o.requires
+
+CMakeFiles/main_code.dir/radio.cpp.o.provides: CMakeFiles/main_code.dir/radio.cpp.o.requires
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/radio.cpp.o.provides.build
+.PHONY : CMakeFiles/main_code.dir/radio.cpp.o.provides
+
+CMakeFiles/main_code.dir/radio.cpp.o.provides.build: CMakeFiles/main_code.dir/radio.cpp.o
+
+
 # Object files for target main_code
 main_code_OBJECTS = \
 "CMakeFiles/main_code.dir/sensors.cpp.o" \
-"CMakeFiles/main_code.dir/storage.cpp.o"
+"CMakeFiles/main_code.dir/storage.cpp.o" \
+"CMakeFiles/main_code.dir/pid.cpp.o" \
+"CMakeFiles/main_code.dir/radio.cpp.o"
 
 # External object files for target main_code
 main_code_EXTERNAL_OBJECTS =
 
 main_code.exe: CMakeFiles/main_code.dir/sensors.cpp.o
 main_code.exe: CMakeFiles/main_code.dir/storage.cpp.o
+main_code.exe: CMakeFiles/main_code.dir/pid.cpp.o
+main_code.exe: CMakeFiles/main_code.dir/radio.cpp.o
 main_code.exe: CMakeFiles/main_code.dir/build.make
 main_code.exe: CMakeFiles/main_code.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable main_code.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable main_code.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main_code.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -127,6 +179,8 @@ CMakeFiles/main_code.dir/build: main_code.exe
 
 CMakeFiles/main_code.dir/requires: CMakeFiles/main_code.dir/sensors.cpp.o.requires
 CMakeFiles/main_code.dir/requires: CMakeFiles/main_code.dir/storage.cpp.o.requires
+CMakeFiles/main_code.dir/requires: CMakeFiles/main_code.dir/pid.cpp.o.requires
+CMakeFiles/main_code.dir/requires: CMakeFiles/main_code.dir/radio.cpp.o.requires
 
 .PHONY : CMakeFiles/main_code.dir/requires
 

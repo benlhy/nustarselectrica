@@ -83,10 +83,16 @@
 		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/main_code.ino">
 			<Option target="main_code"/>
 		</Unit>
+		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.cpp">
+			<Option target="main_code"/>
+		</Unit>
 		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/pid.h">
 			<Option target="main_code"/>
 		</Unit>
-		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio_functions.h">
+		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.cpp">
+			<Option target="main_code"/>
+		</Unit>
+		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/radio.h">
 			<Option target="main_code"/>
 		</Unit>
 		<Unit filename="/cygdrive/c/Users/Retizex/Documents/GitHub/nustarselectrica/main_code/sensors.cpp">

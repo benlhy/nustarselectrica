@@ -15,13 +15,18 @@ namespace nustars {
      */
     void PID::tick(int sensor_x) {
         int dx = previousX - sensor_x;
-        //handles going past the 0 <-> 359 bound
+        /*//handles going past the 0 <-> 359 bound
+         * We are not using this because the rocket will need to do a full rotation to account for
+         * each accumulated rotation since launch
         if (dx >= 180) modX += 360;
         else if (dx <= -180) modX -= 360;
+         */
+        modX = (sensor_x + 180) % 360;
+        modDesire = (desiredX + 180) % 360;
         previousX = sensor_x;
-        currentError = sensor_x + modX - desiredX;
+        currentError = modX - modDesire;
 
-        accumulatedError += currentError; //shifty integration :)
+
         if (accumulatedError > ERROR_CAP) { //limit integrating effects
             accumulatedError = ERROR_CAP;
         } else if (accumulatedError < -ERROR_CAP) {
@@ -31,6 +36,7 @@ namespace nustars {
 
         //PID MAGIC
         double pidFactor = P * currentError + D * derivError + I * accumulatedError;
+        accumulatedError += currentError; //shifty integration :)
 
         int analogOut;
         //output is limited to [-255, 255]
@@ -41,7 +47,8 @@ namespace nustars {
         } else {
             analogOut = (int)pidFactor;
         }
-        Serial.println(analogOut);
+        auto* str = new char[100];
+        delete[] str;
         //Serial.printf("Aout: %3d; cE: %d; SeX: %d\n", analogOut, currentError, sensor_x + modX);
 
         if (currentError < ZERO_TOLERANCE && currentError > ZERO_TOLERANCE) {
@@ -49,7 +56,7 @@ namespace nustars {
             digitalWrite(A8, 0);
             digitalWrite(A9, 0);
             analogWrite(A7, 0);
-            accumulatedError = 0; //reset integration
+            //accumulatedError = 0; //reset integration
         } else if (pidFactor > 0) {
             //move the motor
             digitalWrite(A8, 1);
@@ -70,5 +77,13 @@ namespace nustars {
      */
     void PID::setDesiredX(int x) {
         desiredX = x;
+    }
+
+    /**
+     * getter for the desired x
+     * @return desired x
+     */
+    int PID::getDesiredX() const {
+        return desiredX;
     }
 }

@@ -1,29 +1,29 @@
 #include "sensors.h"
 #include "storage.h"
 #include "pid.h"
+#include "radio.h"
 #include <string>
 
 //#include "Arduino"
 
 using namespace nustars;
 
-//HardwareSerial Serial2;
+//Constants
+const long BROADCAST_DELAY = 0;
+
+//Evil globals
+bool trackingIsOn = false;
 
 //initialize the various classes
 Accelerometer* accelerometer;
 Altimeter* altimeter;
 GPS* gps;
 PID* pid;
+Radio* radio;
 
-/**
- * Records a line to the SD card and prints it to Serial
- * @param x The input
- */
-void record(String x) {
-    Serial.println(x);
+long lastLoopTime = 0;
+long lastBroadcast = 0;
 
-}
-int lastTime = 0;
 void setup() {
     //PIN SETUP
     pinMode(13, OUTPUT);
@@ -42,6 +42,7 @@ void setup() {
     altimeter = new Altimeter;
     gps = new GPS;
     pid = new PID;
+    radio = new Radio;
     Serial.println("Startup complete!");
 }
 
@@ -52,16 +53,15 @@ void loop() {
 
   int x, y, z;
   x = accelerometer->getOrientation(X_AXIS);
-  //y = accelerometer->getOrientation(Y_AXIS);
-  //z = accelerometer->getOrientation(Z_AXIS);
   pid->tick(x);
-  //Serial.println(x);
-  Serial2.printf("NumSat: %d, LNG: %f\n", gps->getSat(), gps->getLng());
-  //Serial2.printf("X: %3d, Y: %3d, Z: %3d\n", x, y, z);
-  //radio->send("TEST");
+  //Serial2.printf("NumSat: %d, LNG: %f\n", gps->getSat(), gps->getLng());
+
+
   long thisTime = millis();
-  //Serial.println(thisTime - lastTime);
-  lastTime = thisTime;
-  //delay(10);
+  if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
+      Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
+  }
+  Serial.println(thisTime - lastLoopTime);
+  lastLoopTime = thisTime;
 }
 

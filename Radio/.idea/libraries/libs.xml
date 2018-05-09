@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/android-sdk-5.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/android-sdk-addon-3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/rxtx-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/xbee-java-library-1.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/slf4j-api-1.7.12.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/slf4j-nop-1.7.12.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

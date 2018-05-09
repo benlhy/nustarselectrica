@@ -123,6 +123,60 @@ main_code/fast:
 	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/build
 .PHONY : main_code/fast
 
+pid.o: pid.cpp.o
+
+.PHONY : pid.o
+
+# target to build an object file
+pid.cpp.o:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/pid.cpp.o
+.PHONY : pid.cpp.o
+
+pid.i: pid.cpp.i
+
+.PHONY : pid.i
+
+# target to preprocess a source file
+pid.cpp.i:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/pid.cpp.i
+.PHONY : pid.cpp.i
+
+pid.s: pid.cpp.s
+
+.PHONY : pid.s
+
+# target to generate assembly for a file
+pid.cpp.s:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/pid.cpp.s
+.PHONY : pid.cpp.s
+
+radio.o: radio.cpp.o
+
+.PHONY : radio.o
+
+# target to build an object file
+radio.cpp.o:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/radio.cpp.o
+.PHONY : radio.cpp.o
+
+radio.i: radio.cpp.i
+
+.PHONY : radio.i
+
+# target to preprocess a source file
+radio.cpp.i:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/radio.cpp.i
+.PHONY : radio.cpp.i
+
+radio.s: radio.cpp.s
+
+.PHONY : radio.s
+
+# target to generate assembly for a file
+radio.cpp.s:
+	$(MAKE) -f CMakeFiles/main_code.dir/build.make CMakeFiles/main_code.dir/radio.cpp.s
+.PHONY : radio.cpp.s
+
 sensors.o: sensors.cpp.o
 
 .PHONY : sensors.o
@@ -186,6 +240,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... main_code"
+	@echo "... pid.o"
+	@echo "... pid.i"
+	@echo "... pid.s"
+	@echo "... radio.o"
+	@echo "... radio.i"
+	@echo "... radio.s"
 	@echo "... sensors.o"
 	@echo "... sensors.i"
 	@echo "... sensors.s"
