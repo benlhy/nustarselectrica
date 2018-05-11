@@ -15,8 +15,8 @@
       <file leaf-file-name="Terminal.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Terminal.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="90" column="27" selection-start-line="90" selection-start-column="27" selection-end-line="90" selection-end-column="27" />
+            <state relative-caret-position="-65">
+              <caret line="110" column="57" lean-forward="true" selection-start-line="110" selection-start-column="57" selection-end-line="110" selection-end-column="57" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -189,12 +189,12 @@
       <workItem from="1525819532420" duration="12742000" />
       <workItem from="1525832905535" duration="235000" />
       <workItem from="1525838499483" duration="313000" />
-      <workItem from="1526000704911" duration="988000" />
+      <workItem from="1526000704911" duration="1294000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25682000" />
+    <option name="totallyTimeSpent" value="25988000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -408,8 +408,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Terminal.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="90" column="27" selection-start-line="90" selection-start-column="27" selection-end-line="90" selection-end-column="27" />
+        <state relative-caret-position="-65">
+          <caret line="110" column="57" lean-forward="true" selection-start-line="110" selection-start-column="57" selection-end-line="110" selection-end-column="57" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
           </folding>
