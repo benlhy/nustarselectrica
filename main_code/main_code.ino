@@ -55,6 +55,7 @@ void setup() {
 }
 
 void loop() {
+  Serial.println("made it to the loop");
   digitalWrite(24, HIGH);
   digitalWrite(25, LOW);
   digitalWrite(26, LOW);
@@ -71,12 +72,13 @@ void loop() {
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
       Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
   }
-
+/*
   if (Serial2.available() > 0) {
       String s = Serial2.readString();
-
+  Serial.println("Enter radio available.");
       bool pb = false, ib = false, db = false;
       for (int i = 0; i < s.length() - 2; i++) {
+        Serial.println("Enter radio read part");
           if (s[i] == 'P' && s[i+1] == '/') {
               P = s[i+2];
               pb = true;
@@ -95,6 +97,7 @@ void loop() {
       Serial.println(pid->getP());
 
   }
+  */
   //Serial.println(thisTime - lastLoopTime);
   lastLoopTime = thisTime;
 }
