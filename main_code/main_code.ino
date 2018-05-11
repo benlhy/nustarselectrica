@@ -25,9 +25,9 @@ long lastLoopTime = 0;
 long lastBroadcast = 0;
 
 const int LED_PINS[] = {24, 25, 26};
-double P = 0;
-double I = 0;
-double D = 0;
+int P = 0;
+int I = 0;
+int D = 0;
 void setup() {
     pinMode(24, OUTPUT);
     pinMode(25, OUTPUT);
