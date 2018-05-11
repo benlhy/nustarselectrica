@@ -1,4 +1,5 @@
 #include "PID.h"
+#include "Arduino.h"
 
 namespace nustars {
     PID::PID() {
