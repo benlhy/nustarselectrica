@@ -34,9 +34,9 @@ object Terminal extends JFrame {
   var msg: String = ""
   var data: ListBuffer[String] = ListBuffer.fill(5){""}
 
-  var p: Integer = 0
-  var i: Integer = 0
-  var d: Integer = 0
+  var p: Int = 0
+  var i: Int = 0
+  var d: Int = 0
 
   this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   this.setLayout(new BorderLayout())

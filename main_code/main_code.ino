@@ -71,7 +71,7 @@ void loop() {
 
   long thisTime = millis();
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
-      Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
+      Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getP(), gps->getLng(), gps->getLat());
   }
 
   if (Serial2.available() > 0) {
@@ -98,8 +98,6 @@ void loop() {
       }
       pid->setPID(P/1000.0, I/1000.0, D/1000.0);
       Serial.println(s);
-      Serial.println(pid->getP());
-
   }
  
   //Serial.println(thisTime - lastLoopTime);

@@ -12,11 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Terminal.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Terminal.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Terminal.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1190">
-              <caret line="49" column="15" lean-forward="true" selection-start-line="49" selection-start-column="15" selection-end-line="49" selection-end-column="15" />
+            <state relative-caret-position="255">
+              <caret line="38" column="12" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -24,11 +24,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TransmitThread.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TransmitThread.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+            <state relative-caret-position="254">
+              <caret line="15" column="33" lean-forward="true" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -64,8 +64,8 @@
         <option value="$PROJECT_DIR$/src/StationWindow.form" />
         <option value="$PROJECT_DIR$/src/GroundStation.scala" />
         <option value="$PROJECT_DIR$/src/DataListener.scala" />
-        <option value="$PROJECT_DIR$/src/Terminal.scala" />
         <option value="$PROJECT_DIR$/src/TransmitThread.scala" />
+        <option value="$PROJECT_DIR$/src/Terminal.scala" />
       </list>
     </option>
   </component>
@@ -189,12 +189,12 @@
       <workItem from="1525819532420" duration="12742000" />
       <workItem from="1525832905535" duration="235000" />
       <workItem from="1525838499483" duration="313000" />
-      <workItem from="1526000704911" duration="4468000" />
+      <workItem from="1526000704911" duration="5045000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29162000" />
+    <option name="totallyTimeSpent" value="29739000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -399,20 +399,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Terminal.scala">
+    <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1190">
-          <caret line="49" column="15" lean-forward="true" selection-start-line="49" selection-start-column="15" selection-end-line="49" selection-end-column="15" />
-          <folding>
-            <element signature="e#0#33#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="254">
+          <caret line="15" column="33" lean-forward="true" selection-start-line="15" selection-start-column="33" selection-end-line="15" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
+    <entry file="file://$PROJECT_DIR$/src/Terminal.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="18" column="9" selection-start-line="18" selection-start-column="9" selection-end-line="18" selection-end-column="9" />
+        <state relative-caret-position="255">
+          <caret line="38" column="12" selection-start-line="38" selection-start-column="12" selection-end-line="38" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#33#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
