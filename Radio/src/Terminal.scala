@@ -1,5 +1,6 @@
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
 import java.awt.{BorderLayout, FlowLayout, Font}
-import java.util
 
 import com.digi.xbee.api.XBeeDevice
 import com.digi.xbee.api.packet.XBeePacket
@@ -25,11 +26,30 @@ object Terminal extends JFrame {
   val iSet = new JTextField()
   val dSet = new JTextField()
 
+  val commitButton = new JButton()
+
   var msg: String = ""
   var data: ListBuffer[String] = ListBuffer.fill(5){""}
 
+  var p = 0
+  var i = 0
+  var d = 0
+
   this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   this.setLayout(new BorderLayout())
+
+  commitButton.addActionListener(new ActionListener() {
+    def actionPerformed(e: ActionEvent): Unit = {
+      try {
+        p = 1000 * pSet.getText.toInt
+        i = 1000 * iSet.getText.toInt
+        d = 1000 * dSet.getText.toInt
+      } catch {
+        case e: Exception => System.out.println("WARNING: GOT INVALID PID STUFF")
+      }
+    }
+  })
+
 
   def parseMsg(label: String): String = {
     if (msg.length > 0) {
@@ -53,6 +73,11 @@ object Terminal extends JFrame {
     }
     "N/A"
   }
+
+  val device = new XBeeDevice(port, baud)
+  device.open()
+  device.addDataListener(DataListener)
+
   def main(args: Array[String]) : Unit = {
     System.out.println("Ready!")
 
@@ -73,14 +98,14 @@ object Terminal extends JFrame {
     buttonPane.add(pSet)
     buttonPane.add(iSet)
     buttonPane.add(dSet)
+    buttonPane.add(commitButton)
     this.setVisible(true)
 
+    commitButton.setText("COMMIT PID VALUES (DANGEROUS)")
 
     //go on the XBee
-    val device = new XBeeDevice(port, baud)
-    device.open()
-    device.addDataListener(DataListener)
 
+    TransmitThread.start()
     while(true) {
       Thread.sleep(50)
       val labels: List[String] = List("T", "X", "Tr", "Ln", "Lt")
@@ -94,6 +119,7 @@ object Terminal extends JFrame {
       tracking.setText("Tracking goal: " + data(2))
       longitude.setText("Longitude: " + data(3))
       latitude.setText("Latitude: " + data(4))
+      System.out.println(p)
     }
   }
 }

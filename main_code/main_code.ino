@@ -24,7 +24,13 @@ Radio* radio;
 long lastLoopTime = 0;
 long lastBroadcast = 0;
 
+const int LED_PINS[] = {24, 25, 26};
+
 void setup() {
+    pinMode(24, OUTPUT);
+    pinMode(25, OUTPUT);
+    pinMode(26, OUTPUT);
+
     //PIN SETUP
     pinMode(13, OUTPUT);
     digitalWrite(13, HIGH);
@@ -47,6 +53,9 @@ void setup() {
 }
 
 void loop() {
+  digitalWrite(24, HIGH);
+  digitalWrite(25, LOW);
+  digitalWrite(26, LOW);
   altimeter->tick();
   accelerometer->tick();
   gps->tick();
@@ -56,12 +65,35 @@ void loop() {
   pid->tick(x);
   //Serial2.printf("NumSat: %d, LNG: %f\n", gps->getSat(), gps->getLng());
 
-
   long thisTime = millis();
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
-      Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
+      Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
   }
-  Serial.println(thisTime - lastLoopTime);
+    /*
+  if (Serial2.available() > 0) {
+      String s = Serial2.readString();
+      double p, i, d;
+      bool pb = false, ib = false, db = false;
+      for (int i = 0; i < s.length() - 2; i++) {
+          if (s[i] == 'P' && s[i+1] == '/') {
+              p = s[i+2];
+              pb = true;
+          } else if (s[i] == 'I' && s[i+1] == '/') {
+              i = s[i+2];
+              ib = true;
+          } else if (s[i] == 'D' && s[i+1] == '/') {
+              d = s[i+2];
+              db = true;
+          }
+          if (pb && ib && db) {
+              break;
+          }
+      }
+      pid->setPID(p/1000.0, i/1000.0, d/1000.0);
+      Serial.println(pid->getP());
+
+  }*/
+  //Serial.println(thisTime - lastLoopTime);
   lastLoopTime = thisTime;
 }
 

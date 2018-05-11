@@ -7,6 +7,9 @@ namespace nustars {
         previousError = 0; //the previous (x - desiredX); (note: x=(modX + sensor_x)
         previousX = 0; //previous sensor_x
         accumulatedError = 0; //questionable cumulative integration
+        P = 0;
+        I = 0;
+        D = 0;
     }
 
     /**
@@ -85,5 +88,15 @@ namespace nustars {
      */
     int PID::getDesiredX() const {
         return desiredX;
+    }
+
+    void PID::setPID(double p, double i, double d) {
+        P = p;
+        I = i;
+        D = d;
+    }
+
+    double PID::getP() {
+        return P;
     }
 }
