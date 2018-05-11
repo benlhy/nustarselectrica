@@ -95,5 +95,6 @@ void loop() {
   }*/
   //Serial.println(thisTime - lastLoopTime);
   lastLoopTime = thisTime;
+  Serial.println(pid->getP());
 }
 

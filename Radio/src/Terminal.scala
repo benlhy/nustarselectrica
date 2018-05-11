@@ -1,6 +1,6 @@
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import java.awt.{BorderLayout, FlowLayout, Font}
+import java.awt.{BorderLayout, FlowLayout, Font, GridLayout}
 
 import com.digi.xbee.api.XBeeDevice
 import com.digi.xbee.api.packet.XBeePacket
@@ -15,7 +15,7 @@ object Terminal extends JFrame {
   val baud: Integer = 9600
 
   //UI OBJECTS
-  val buttonPane = new JPanel()
+  val infoPane = new JPanel()
   val xRot = new JLabel()
   val time = new JLabel()
   val tracking = new JLabel()
@@ -25,6 +25,9 @@ object Terminal extends JFrame {
   val pSet = new JTextField()
   val iSet = new JTextField()
   val dSet = new JTextField()
+
+  val allConsole = new JTextArea()
+  val msgConsole = new JTextArea()
 
   val commitButton = new JButton()
 
@@ -82,23 +85,27 @@ object Terminal extends JFrame {
     System.out.println("Ready!")
 
     xRot.setText("SAMPLE TEXT!")
-    this.add(buttonPane, BorderLayout.WEST)
-    buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.Y_AXIS))
+    this.add(infoPane, BorderLayout.WEST)
+    this.add(allConsole, BorderLayout.EAST)
+    allConsole.setText("HI")
+    msgConsole.setText("OHI")
+    this.add(msgConsole, BorderLayout.CENTER)
+    infoPane.setLayout(new BoxLayout(infoPane, BoxLayout.Y_AXIS))
     val f: Font = new Font("Arial", Font.PLAIN, 20)
     time.setFont(f)
     xRot.setFont(f)
     tracking.setFont(f)
     longitude.setFont(f)
     latitude.setFont(f)
-    buttonPane.add(time)
-    buttonPane.add(xRot)
-    buttonPane.add(tracking)
-    buttonPane.add(longitude)
-    buttonPane.add(latitude)
-    buttonPane.add(pSet)
-    buttonPane.add(iSet)
-    buttonPane.add(dSet)
-    buttonPane.add(commitButton)
+    infoPane.add(time)
+    infoPane.add(xRot)
+    infoPane.add(tracking)
+    infoPane.add(longitude)
+    infoPane.add(latitude)
+    infoPane.add(pSet)
+    infoPane.add(iSet)
+    infoPane.add(dSet)
+    infoPane.add(commitButton)
     this.setVisible(true)
 
     commitButton.setText("COMMIT PID VALUES (DANGEROUS)")
