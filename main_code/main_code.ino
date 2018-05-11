@@ -15,11 +15,11 @@ const long BROADCAST_DELAY = 0;
 bool trackingIsOn = false;
 
 //initialize the various classes
-Accelerometer* accelerometer;
-Altimeter* altimeter;
-GPS* gps;
-PID* pid;
-Radio* radio;
+Accelerometer* accelerometer = NULL;
+Altimeter* altimeter = NULL;
+GPS* gps = NULL;
+PID* pid= NULL;
+Radio* radio = NULL;
 
 long lastLoopTime = 0;
 long lastBroadcast = 0;
@@ -29,6 +29,7 @@ int P = 0;
 int I = 0;
 int D = 0;
 void setup() {
+  Serial.println("Tried to do anything");
     pinMode(24, OUTPUT);
     pinMode(25, OUTPUT);
     pinMode(26, OUTPUT);
@@ -44,9 +45,10 @@ void setup() {
     Serial.begin(115200); //USB
     Serial1.begin(9600); //GPS
     Serial2.begin(9600); //RADIO
-
+    Serial.println("Got my serials online");
     //Initialize classes
     accelerometer = new Accelerometer;
+    Serial.println("GOT THE BNO WOOO!");
     altimeter = new Altimeter;
     gps = new GPS;
     pid = new PID;
@@ -55,7 +57,6 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("made it to the loop");
   digitalWrite(24, HIGH);
   digitalWrite(25, LOW);
   digitalWrite(26, LOW);
@@ -72,32 +73,35 @@ void loop() {
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
       Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getDesiredX(), gps->getLng(), gps->getLat());
   }
-/*
+
   if (Serial2.available() > 0) {
       String s = Serial2.readString();
-  Serial.println("Enter radio available.");
       bool pb = false, ib = false, db = false;
       for (int i = 0; i < s.length() - 2; i++) {
-        Serial.println("Enter radio read part");
-          if (s[i] == 'P' && s[i+1] == '/') {
-              P = s[i+2];
-              pb = true;
-          } else if (s[i] == 'I' && s[i+1] == '/') {
-              I = s[i+2];
-              ib = true;
-          } else if (s[i] == 'D' && s[i+1] == '/') {
-              D = s[i+2];
-              db = true;
-          }
-          if (pb && ib && db) {
-              break;
-          }
+          if (s[i] == 'P' && s[i + 1] == '/') {
+              P = 0;
+              for (int n = 0; n < 4; n++) {
+                  P = (P << 8) + s[i + 2 + n];
+                  pb = true;
+              }
+              } else if (s[i] == 'I' && s[i + 1] == '/') {
+                  I = s[i + 2];
+                  ib = true;
+              } else if (s[i] == 'D' && s[i + 1] == '/') {
+                  D = s[i + 2];
+                  db = true;
+              }
+              if (pb && ib && db) {
+                  break;
+              }
+
       }
       pid->setPID(P/1000.0, I/1000.0, D/1000.0);
+      Serial.println(s);
       Serial.println(pid->getP());
 
   }
-  */
+ 
   //Serial.println(thisTime - lastLoopTime);
   lastLoopTime = thisTime;
 }

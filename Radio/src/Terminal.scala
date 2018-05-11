@@ -34,9 +34,9 @@ object Terminal extends JFrame {
   var msg: String = ""
   var data: ListBuffer[String] = ListBuffer.fill(5){""}
 
-  var p = 0
-  var i = 0
-  var d = 0
+  var p: Integer = 0
+  var i: Integer = 0
+  var d: Integer = 0
 
   this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
   this.setLayout(new BorderLayout())
@@ -44,9 +44,9 @@ object Terminal extends JFrame {
   commitButton.addActionListener(new ActionListener() {
     def actionPerformed(e: ActionEvent): Unit = {
       try {
-        p = 1000 * pSet.getText.toInt
-        i = 1000 * iSet.getText.toInt
-        d = 1000 * dSet.getText.toInt
+        p = (1000 * pSet.getText.toDouble).toInt
+        i = (1000 * iSet.getText.toDouble).toInt
+        d = (1000 * dSet.getText.toDouble).toInt
       } catch {
         case e: Exception => System.out.println("WARNING: GOT INVALID PID STUFF")
       }
@@ -126,7 +126,7 @@ object Terminal extends JFrame {
       tracking.setText("Tracking goal: " + data(2))
       longitude.setText("Longitude: " + data(3))
       latitude.setText("Latitude: " + data(4))
-      System.out.println(p)
+      System.out.println(p.asInstanceOf[Byte])
     }
   }
 }
