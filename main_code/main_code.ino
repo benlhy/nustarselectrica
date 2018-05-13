@@ -1,12 +1,12 @@
-#include "sensors.h"
-#include "storage.h"
-#include "pid.h"
-#include "radio.h"
-#include <string>
+//#include "sensors.h"
+//#include "storage.h"
+//#include "pid.h"
+//#include "radio.h"
+//#include <string>
 
 //#include "Arduino"
 
-using namespace nustars;
+//using namespace nustars;
 
 //Constants
 const long BROADCAST_DELAY = 0;
@@ -15,11 +15,11 @@ const long BROADCAST_DELAY = 0;
 bool trackingIsOn = false;
 
 //initialize the various classes
-Accelerometer* accelerometer = NULL;
-Altimeter* altimeter = NULL;
-GPS* gps = NULL;
-PID* pid= NULL;
-Radio* radio = NULL;
+//Accelerometer* accelerometer = NULL;
+//Altimeter* altimeter = NULL;
+//GPS* gps = NULL;
+//PID* pid= NULL;
+//Radio* radio = NULL;
 
 long lastLoopTime = 0;
 long lastBroadcast = 0;
@@ -29,7 +29,7 @@ int P = 0;
 int I = 0;
 int D = 0;
 void setup() {
-  Serial.println("Tried to do anything");
+    /*
     pinMode(24, OUTPUT);
     pinMode(25, OUTPUT);
     pinMode(26, OUTPUT);
@@ -41,34 +41,36 @@ void setup() {
     pinMode(A9, OUTPUT); //motor direction input A
     pinMode(A8, OUTPUT); //motor direction input B
     pinMode(A7, 0); //controls motor speed
-
-    Serial.begin(115200); //USB
+    */
+    Serial.begin(9600); //USB
+    /*
     Serial1.begin(9600); //GPS
     Serial2.begin(9600); //RADIO
-    Serial.println("Got my serials online");
+    */
     //Initialize classes
-    accelerometer = new Accelerometer;
-    Serial.println("GOT THE BNO WOOO!");
+    /*accelerometer = new Accelerometer;
     altimeter = new Altimeter;
     gps = new GPS;
     pid = new PID;
-    radio = new Radio;
+    radio = new Radio;*/
     Serial.println("Startup complete!");
 }
 
 void loop() {
+  Serial.println("Looping");
+    /*
   digitalWrite(24, HIGH);
   digitalWrite(25, LOW);
-  digitalWrite(26, LOW);
-  altimeter->tick();
-  accelerometer->tick();
-  gps->tick();
+  digitalWrite(26, LOW);*/
+  //altimeter->tick();
+  //accelerometer->tick();
+  //gps->tick();
 
   int x, y, z;
-  x = accelerometer->getOrientation(X_AXIS);
-  pid->tick(x);
+  //x = accelerometer->getOrientation(X_AXIS);
+  //pid->tick(x);
   //Serial2.printf("NumSat: %d, LNG: %f\n", gps->getSat(), gps->getLng());
-
+    /*
   long thisTime = millis();
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
       Serial2.printf("T:%d/X:%d/Tr:%d/Ln:%.2f/Lt:%.2f/\n", thisTime, x, pid->getP(), gps->getLng(), gps->getLat());
@@ -99,8 +101,8 @@ void loop() {
       pid->setPID(P/1000.0, I/1000.0, D/1000.0);
       Serial.println(s);
   }
- 
+ */
   //Serial.println(thisTime - lastLoopTime);
-  lastLoopTime = thisTime;
+  //lastLoopTime = thisTime;
 }
 
