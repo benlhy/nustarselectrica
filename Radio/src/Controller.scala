@@ -19,26 +19,31 @@ object Controller extends JFrame {
 
 
   var msg: String = ""
-  val labels: List[String] = List("T", "X", "Tr", "Ln", "Lt")
-  var data: ListBuffer[String] = ListBuffer.fill(5){"N/A"}
+  val labels: List[String] = List("T", "X", "Y", "Z", "Tr", "Ln", "Lt", "Lp")
+  var data: ListBuffer[String] = ListBuffer.fill(labels.length){"N/A"}
 
-  var p: Int = 0
-  var i: Int = 0
-  var d: Int = 0
+  private var _p: Int = 0
+  def p: Int = _p
+  def p_= (x: Int): Unit = {_p = x}
+  private var _i: Int = 0
+  def i: Int = _i
+  def i_= (x: Int): Unit = {_i = x}
+  private var _d: Int = 0
+  def d: Int = _d
+  def d_= (x:Int): Unit = {_d = x}
 
-/*
-  commitButton.addActionListener(new ActionListener() {
-    def actionPerformed(e: ActionEvent): Unit = {
-      try {
-        p = (1000 * pSet.getText.toDouble).toInt
-        i = (1000 * iSet.getText.toDouble).toInt
-        d = (1000 * dSet.getText.toDouble).toInt
-      } catch {
-        case e: Exception => System.out.println("WARNING: GOT INVALID PID STUFF")
-      }
-    }
-  })
-*/
+  def setPID(p: Int, i: Int, d: Int): Unit = {
+    _p = p
+    _i = i
+    _d = d
+  }
+
+  private var _transmissionSuccesses = 0
+  def transmissionSuccesses: Int = _transmissionSuccesses
+  def transmissionSuccesses_= (x: Int): Unit = {_transmissionSuccesses = x}
+  private var _transmissionFailures = 0
+  def transmissionFailures: Int = _transmissionFailures
+  def transmissionFailures_= (x: Int): Unit = {_transmissionFailures = x}
 
   def say(s: String): Unit = {
     System.out.println(s)

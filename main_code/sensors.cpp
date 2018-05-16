@@ -25,7 +25,6 @@ namespace nustars {
      */
     void Accelerometer::tick() {
         float collect[3];
-
         // The data will be very noisy, so we have to apply a moving average
         const int NUM_SAMPLES = 5;
         for (int i = 0; i < NUM_SAMPLES; i++) {

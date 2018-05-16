@@ -1,29 +1,22 @@
+import java.nio.ByteBuffer
+
+import com.digi.xbee.api.exceptions.TimeoutException
+
+import scala.collection.mutable.ListBuffer
+
 object TransmitThread extends Thread {
   @Override
   override def run(): Unit = {
     Controller.say("Transmission thread is online")
     while (true) {
-      val pBytes = java.nio.ByteBuffer.allocate(200)
-
-        pBytes.putChar('N')
-        pBytes.putChar('U')
-        pBytes.putChar(' ')
-        pBytes.putChar('P')
-        pBytes.putChar('/')
-        pBytes.putInt(Controller.p)
-        pBytes.putChar('I')
-        pBytes.putChar('/')
-        pBytes.putInt(Controller.i)
-        pBytes.putChar('D')
-        pBytes.putChar('/')
-        pBytes.putInt(Controller.d)
-       /*catch {
-        case e: Exception => System.out.println("oh noOOOOO")
-      }*/
+      Thread.sleep(50)
+      val lst: ListBuffer[Byte] = new ListBuffer[Byte]
+      lst += 'P' += '/' += ((Controller.p >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.p & 0xFF).asInstanceOf[Byte]
       try {
-        Controller.device.sendBroadcastData(pBytes.array())
+        Controller.device.sendBroadcastData(lst.toArray)
+        Controller.transmissionSuccesses += 1
       } catch {
-        case e: Exception => "oh no"
+        case e: TimeoutException => Controller.transmissionFailures += 1
       }
 
     }

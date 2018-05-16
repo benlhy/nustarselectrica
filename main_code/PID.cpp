@@ -2,6 +2,9 @@
 #include "Arduino.h"
 
 namespace nustars {
+    /**
+     *
+     */
     PID::PID() {
         desiredX = 0; //the desired rotation
         modX = 0; //enable values for position outside the bounds [0, 360]
@@ -18,6 +21,7 @@ namespace nustars {
      * @param sensor_x The current value of the X rotation in degrees
      */
     void PID::tick(int sensor_x) {
+
         int dx = previousX - sensor_x;
         /*//handles going past the 0 <-> 359 bound
          * We are not using this because the rocket will need to do a full rotation to account for
@@ -25,6 +29,7 @@ namespace nustars {
         if (dx >= 180) modX += 360;
         else if (dx <= -180) modX -= 360;
          */
+
         modX = (sensor_x + 180) % 360;
         modDesire = (desiredX + 180) % 360;
         previousX = sensor_x;
@@ -51,28 +56,37 @@ namespace nustars {
         } else {
             analogOut = (int)pidFactor;
         }
-        auto* str = new char[100];
-        delete[] str;
+
         //Serial.printf("Aout: %3d; cE: %d; SeX: %d\n", analogOut, currentError, sensor_x + modX);
 
+        //handle the LEDs based on the actual error, not the pid value
         if (currentError < ZERO_TOLERANCE && currentError > ZERO_TOLERANCE) {
-            //halt motor
-            digitalWrite(A8, 0);
-            digitalWrite(A9, 0);
-            analogWrite(A7, 0);
-            //accumulatedError = 0; //reset integration
-        } else if (pidFactor > 0) {
-            //move the motor
+            digitalWrite(24, LOW);
+            digitalWrite(25, HIGH);
+            digitalWrite(26, LOW);
+        } else if (currentError > 0) {
+            digitalWrite(24, HIGH);
+            digitalWrite(25, LOW);
+            digitalWrite(26, LOW);
+        } else {
+            digitalWrite(24, LOW);
+            digitalWrite(25, LOW);
+            digitalWrite(26, HIGH);
+        }
+
+        if (pidFactor >= 0) {
+            //move the motor one way
             digitalWrite(A8, 1);
             digitalWrite(A9, 0);
             analogWrite(A7, analogOut);
         } else {
-            //also move the motor
+            //move the motor the other way
             digitalWrite(A8, 0);
             digitalWrite(A9, 1);
             analogWrite(A7, -analogOut);
         }
         previousError = currentError;
+
     }
 
     /**

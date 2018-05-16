@@ -1,14 +1,15 @@
 #include "SD.h"
+#include <SPI.h>
 
 namespace nustars {
     class Storage {
     public:
         Storage(String file);
-        void write(String msg);
+        void write(char* msg);
         int* read(int& lng);
 
     private:
-        File sdFile;
-        String fileName;
+        bool isInitialized;
+        char* fileName;
     };
 }
