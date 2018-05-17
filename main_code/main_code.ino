@@ -72,9 +72,9 @@ void loop() {
   x_rot = accelerometer->getOrientation(X_AXIS);
   y_rot = accelerometer->getOrientation(Y_AXIS);
   z_rot = accelerometer->getOrientation(Z_AXIS);
-  if (automaticLaunchDetected) {
+  //if (automaticLaunchDetected) {
       pid->tick(x_rot);
-  }
+  //}
   long thisTime = millis();
 
   //do everything involving radio broadcast

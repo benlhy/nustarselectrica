@@ -31,6 +31,7 @@ public class Terminal {
     private JLabel zRot;
     private JLabel yRotText;
     private JLabel zRotText;
+    private JButton zeroButton;
 
 
     public Terminal() {
@@ -38,9 +39,9 @@ public class Terminal {
             @Override
             public void actionPerformed(ActionEvent h) {
                 try {
-                    int tmpI = 1000 * Integer.parseInt(textFieldP.getText());
-                    int tmpP = 1000 * Integer.parseInt(textFieldI.getText());
-                    int tmpD = 1000 * Integer.parseInt(textFieldD.getText());
+                    int tmpI = (int)(1000 * Double.parseDouble(textFieldP.getText()));
+                    int tmpP = (int)(1000 * Double.parseDouble(textFieldI.getText()));
+                    int tmpD = (int)(1000 * Double.parseDouble(textFieldD.getText()));
                     if (tmpP > 0xFFFF || tmpI > 0xFFFF || tmpD > 0xFFFF) {
                         Controller.say("PID Value too high!");
                         return;
@@ -49,6 +50,12 @@ public class Terminal {
                 } catch (Exception e){
                     Controller.say("Invalid PID inputs!");
                 }
+            }
+        });
+        zeroButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Controller.setPID(0, 0, 0);
             }
         });
     }
