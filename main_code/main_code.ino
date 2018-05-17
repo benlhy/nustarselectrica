@@ -60,9 +60,6 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(24, HIGH);
-  digitalWrite(25, LOW);
-  digitalWrite(26, LOW);
   altimeter->tick();
   accelerometer->tick();
   gps->tick();
