@@ -9,6 +9,8 @@ namespace nustars {
         double P, I, D;
         const int ZERO_TOLERANCE = 5; //+ or - from desiredX to shut off the motor (degrees)
         const int ERROR_CAP = 255; //limiting accumulated error to this value
+        int ROTATION_TARGETS[];
+        int ROTATION_TARGET_DELAY[];
     public:
         PID(); //TODO: Add pin options
         void tick(int x); //do PID stuff

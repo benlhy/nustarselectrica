@@ -11,7 +11,7 @@ object TransmitThread extends Thread {
     while (true) {
       Thread.sleep(50)
       val lst: ListBuffer[Byte] = new ListBuffer[Byte]
-      lst += 'P' += '/' += ((Controller.p >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.p & 0xFF).asInstanceOf[Byte]
+      lst += 'N' += 'U' += ' ' += 'P' += '/' += ((Controller.p >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.p & 0xFF).asInstanceOf[Byte]
       try {
         Controller.device.sendBroadcastData(lst.toArray)
         Controller.transmissionSuccesses += 1

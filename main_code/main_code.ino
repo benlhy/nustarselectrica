@@ -77,7 +77,7 @@ void loop() {
   //do everything involving radio broadcast
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
       char* msg = new char[100];
-      sprintf(msg, "T:%lu/X:%d/Y:%d/Z:%d/Tr:%d/Ln:%.2f/Lt:%.2f/Lp:%lu/\n", thisTime, x_rot, y_rot, z_rot, pid->getDesiredX(), gps->getLng(), gps->getLat(), (thisTime - lastLoopTime));
+      sprintf(msg, "NU T:%lu/X:%f/Y:%d/Z:%d/Tr:%d/Ln:%.2f/Lt:%.2f/Lp:%lu/A:%d/\n", thisTime, pid->getP(), y_rot, z_rot, pid->getDesiredX(), gps->getLng(), gps->getLat(), (thisTime - lastLoopTime), altimeter->getAltitude());
       //Serial.println(msg);
       Serial2.printf(msg);
       storage->write(msg);
@@ -92,27 +92,32 @@ void loop() {
       }
       Serial2.flush();
       bool pb = false, ib = false, db = false;
-      for (int i = 0; i < 20 - 2; i++) {
-          if (s[i] == 'P' && s[i + 1] == '/') {
-              P = 0;
-              for (int n = 0; n < 2; n++) {
-                  P = (P << 8) + s[i + 2 + n];
-                  pb = true;
+      for (int j = 0; j < 20 - 2; j++) {
+          if (s[j] == 'N' && s[j+1] == 'U') {
+              for (int i = 0; i < 20 - 2; i++) {
+                  if (s[i] == 'P' && s[i + 1] == '/') {
+                      P = 0;
+                      for (int n = 0; n < 2; n++) {
+                          P = (P << 8) + s[i + 2 + n];
+                          pb = true;
+                      }
+                  } else if (s[i] == 'I' && s[i + 1] == '/') {
+                      I = 0;
+                      for (int n = 0; n < 2; n++) {
+                          I = (I << 8) + s[i + 2 + n];
+                          ib = true;
+                      }
+                  } else if (s[i] == 'D' && s[i + 1] == '/') {
+                      D = 0;
+                      for (int n = 0; n < 2; n++) {
+                          D = (D << 8) + s[i + 2 + n];
+                          db = true;
+                      }
+                  }
+                  if (pb && ib && db) {
+                      break;
+                  }
               }
-          } else if (s[i] == 'I' && s[i + 1] == '/') {
-              I = 0;
-              for (int n = 0; n < 2; n++) {
-                  I = (I << 8) + s[i + 2 + n];
-                  ib = true;
-              }
-          } else if (s[i] == 'D' && s[i + 1] == '/') {
-              D = 0;
-              for (int n = 0; n < 2; n++) {
-                  D = (D << 8) + s[i + 2 + n];
-                  db = true;
-              }
-          }
-          if (pb && ib && db) {
               break;
           }
       }

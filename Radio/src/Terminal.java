@@ -32,6 +32,8 @@ public class Terminal {
     private JLabel yRotText;
     private JLabel zRotText;
     private JButton zeroButton;
+    private JLabel altitudeText;
+    private JLabel altitude;
 
 
     public Terminal() {

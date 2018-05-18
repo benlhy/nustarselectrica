@@ -98,7 +98,7 @@ object Controller extends JFrame {
         TransmitThread.start()
       } catch {
         case e: InvalidInterfaceException => say("COULD NOT INITIALIZE XBEE: XBee not found on " + port)
-        case e: Exception => say("COULD NOT INITIALIZE XBEE: UNKNOWN ERROR!")
+        case e: Exception => say("COULD NOT INITIALIZE XBEE: " + e)
       }
     } else {
       say("NOT initializing XBee, debug flag is set!")
