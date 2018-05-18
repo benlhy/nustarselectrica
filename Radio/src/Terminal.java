@@ -23,7 +23,6 @@ public class Terminal {
     private JLabel latText;
     private JLabel lngText;
     public JTextArea console;
-    private JSpinner comSpinner;
     private JButton openXBeeButton;
     private JLabel transmissionRatio;
     private JLabel loopDelay;
@@ -34,6 +33,8 @@ public class Terminal {
     private JButton zeroButton;
     private JLabel altitudeText;
     private JLabel altitude;
+    private JCheckBox useGroundPIDCheckBox;
+    public JComboBox serialCombo;
 
 
     public Terminal() {
@@ -71,6 +72,7 @@ public class Terminal {
         longitude.setText(Controller.getData(5));
         latitude.setText(Controller.getData(6));
         loopDelay.setText(Controller.getData(7));
+        altitude.setText(Controller.getData(8));
 
         transmissionRatio.setText(String.format("%s%.2f", "Transmission fail ratio: ", (double)Controller.transmissionFailures()/(Controller.transmissionSuccesses()+Controller.transmissionFailures())));
     }

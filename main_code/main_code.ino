@@ -31,6 +31,7 @@ const char FILE_NAME[] = "out.txt";
 unsigned int P = 1000;
 unsigned int I = 0;
 unsigned int D = 0;
+unsigned long transmission = 0;
 
 void setup() {
     pinMode(24, OUTPUT);
@@ -77,7 +78,9 @@ void loop() {
   //do everything involving radio broadcast
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
       char* msg = new char[100];
-      sprintf(msg, "NU T:%lu/X:%f/Y:%d/Z:%d/Tr:%d/Ln:%.2f/Lt:%.2f/Lp:%lu/A:%d/\n", thisTime, pid->getP(), y_rot, z_rot, pid->getDesiredX(), gps->getLng(), gps->getLat(), (thisTime - lastLoopTime), altimeter->getAltitude());
+      sprintf(msg, "NU T:%lu/X:%f/Y:%d/Z:%d/Tr:%d/Ln:%f/Lt:%f/Lp:%lu/A:%d/Tn:%lu\n",
+              thisTime, pid->getP(), y_rot, z_rot, pid->getDesiredX(), gps->getLng(),
+              gps->getLat(), (thisTime - lastLoopTime), altimeter->getAltitude(), ++transmission);
       //Serial.println(msg);
       Serial2.printf(msg);
       storage->write(msg);
@@ -93,7 +96,9 @@ void loop() {
       Serial2.flush();
       bool pb = false, ib = false, db = false;
       for (int j = 0; j < 20 - 2; j++) {
+          Serial.println("Oh hey xf");
           if (s[j] == 'N' && s[j+1] == 'U') {
+              Serial.println("Oh hey");
               for (int i = 0; i < 20 - 2; i++) {
                   if (s[i] == 'P' && s[i + 1] == '/') {
                       P = 0;

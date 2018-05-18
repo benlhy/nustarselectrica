@@ -60,6 +60,7 @@ namespace nustars {
         //Serial.printf("Aout: %3d; cE: %d; SeX: %d\n", analogOut, currentError, sensor_x + modX);
 
         //handle the LEDs based on the actual error, not the pid value
+        //TODO: Make this depend on global in main_code
         if (currentError < ZERO_TOLERANCE && currentError > ZERO_TOLERANCE) {
             digitalWrite(24, LOW);
             digitalWrite(25, HIGH);
