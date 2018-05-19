@@ -123,20 +123,11 @@ object Controller extends JFrame {
       say("XBee online.")
       device.addDataListener(DataListener)
       TransmitThread.start()
-      while (true) {
-        Controller.say("Oh hey")
-        for (i <- data.indices) {
-          val thisMsg = parseMsg(labels(i))
-          if (!thisMsg.equals("N/A")) data(i) = thisMsg
-        }
-        Controller.say("hey")
-        trm.updateUI()
-        window.repaint()
-      }
     } catch {
       case e: InvalidInterfaceException => say("COULD NOT INITIALIZE XBEE: XBee not found on " + port)
       case e: Exception => say("COULD NOT INITIALIZE XBEE: " + e)
     }
+    Container.start()
   }
 
   def main(args: Array[String]): Unit = {

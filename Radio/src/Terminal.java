@@ -89,7 +89,7 @@ public class Terminal {
     }
 
     public void updateUI() {
-        Controller.say("egg");
+
         time.setText(Controller.getData(0));
         xRot.setText(Controller.getData(1));
         yRot.setText(Controller.getData(2));
@@ -100,5 +100,6 @@ public class Terminal {
         loopDelay.setText(Controller.getData(7));
         altitude.setText(Controller.getData(8));
         transmissionRatio.setText(String.format("%s%.2f", "Transmission fail ratio: ", (double)Controller.transmissionFailures()/(Controller.transmissionSuccesses()+Controller.transmissionFailures())));
+
     }
 }
