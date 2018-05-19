@@ -1,12 +1,13 @@
 import com.digi.xbee.api.XBeeDevice
 import com.digi.xbee.api.exceptions.InvalidInterfaceException
 import javax.swing._
+import gnu.io.CommPortIdentifier
+import javax.swing.event.ListDataListener
 
 import scala.collection.mutable.ListBuffer
 
 object Controller extends JFrame {
   val DEBUG_NO_XBEE = false //don't try to load the xbee
-  lazy val comDevice
 
   //XBEE INFORMATION
   val baud: Integer = 9600 //leave this
@@ -23,9 +24,10 @@ object Controller extends JFrame {
   Tn: Transmisison number
    */
   val labels: List[String] = List("T", "X", "Y", "Z", "Tr", "Ln", "Lt", "Lp", "A", "Tn")
-  var data: ListBuffer[String] = ListBuffer.fill(labels.length) {
-    "N/A"
-  }
+  var data: ListBuffer[String] = ListBuffer.fill(labels.length) {"N/A"}
+
+  var trackingTargets: Array[Int] = Array.fill(6){0}
+  var trackingTimes: Array[Int] = Array.fill(6){0}
 
   //the pid values which will be updated by the receiver
   private var _p: Int = 0
@@ -110,40 +112,45 @@ object Controller extends JFrame {
 
   val window = new JFrame("Terminal")
   val trm = new Terminal
+  var device: XBeeDevice = _
 
   def control(device: XBeeDevice, port: String): Unit = {
     try {
       device.open()
+      trm.serialCombo.setEnabled(false)
+      trm.openXBeeButton.setEnabled(false)
       say("XBee online.")
       device.addDataListener(DataListener)
       TransmitThread.start()
+      while (true) {
+        Thread.sleep(50)
+        for (i <- data.indices) {
+          val thisMsg = parseMsg(labels(i))
+          if (!thisMsg.equals("N/A")) data(i) = thisMsg
+        }
+        trm.updateUI()
+      }
     } catch {
       case e: InvalidInterfaceException => say("COULD NOT INITIALIZE XBEE: XBee not found on " + port)
       case e: Exception => say("COULD NOT INITIALIZE XBEE: " + e)
     }
-    while (true) {
-      Thread.sleep(50)
-      for (i <- data.indices) {
-        val thisMsg = parseMsg(labels(i))
-        if (!thisMsg.equals("N/A")) data(i) = thisMsg
-      }
-      trm.updateUI()
-    }
   }
 
   def main(args: Array[String]): Unit = {
+
+    val ports = CommPortIdentifier.getPortIdentifiers
+    while (ports.hasMoreElements) {
+      val port = ports.nextElement.asInstanceOf[CommPortIdentifier]
+      if (port.getPortType == CommPortIdentifier.PORT_SERIAL) {
+        Controller.say(port.getName)
+        //trm.serialCombo.addItem(port.getName)
+      }
+    }
+
     window.setContentPane(trm.mainPanel)
     window.pack()
     window.setVisible(true)
-    say("Interface loaded!")
-
-    //this should block at control() and will only repeat for the xbee having invalid values
-    while (true) {
-      Thread.sleep(500)
-      val port = trm.serialCombo.getSelectedItem.toString
-      val device = new XBeeDevice(port, baud)
-      //go on the XBee
-      control(device, port)
-    }
+    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+    say("Interface loaded! You must select the XBee serial ID and click open.")
   }
 }

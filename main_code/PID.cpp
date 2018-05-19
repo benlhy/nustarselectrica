@@ -115,4 +115,13 @@ namespace nustars {
     double PID::getP() {
         return P;
     }
+
+    void PID::idleMotor() {
+        digitalWrite(A8, 0);
+        digitalWrite(A9, 1);
+        analogWrite(A7, 0);
+        digitalWrite(24, LOW);
+        digitalWrite(25, LOW);
+        digitalWrite(26, LOW);
+    }
 }

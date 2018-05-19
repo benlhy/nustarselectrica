@@ -1,3 +1,5 @@
+import com.digi.xbee.api.XBeeDevice;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,7 +25,7 @@ public class Terminal {
     private JLabel latText;
     private JLabel lngText;
     public JTextArea console;
-    private JButton openXBeeButton;
+    public JButton openXBeeButton;
     private JLabel transmissionRatio;
     private JLabel loopDelay;
     private JLabel yRot;
@@ -33,8 +35,23 @@ public class Terminal {
     private JButton zeroButton;
     private JLabel altitudeText;
     private JLabel altitude;
-    private JCheckBox useGroundPIDCheckBox;
+    public JCheckBox useGroundPIDCheckBox;
     public JComboBox serialCombo;
+    private JTextField time0;
+    private JTextField target0;
+    private JTextField time1;
+    private JTextField target1;
+    private JTextField time2;
+    private JTextField target2;
+    private JTextField time3;
+    private JTextField target3;
+    private JTextField time4;
+    private JTextField target4;
+    private JTextField time5;
+    private JTextField target5;
+    private JButton sendTrackingButton;
+    public JCheckBox forceOverrideTrackingCheckBox;
+    public JCheckBox trackingCheckBox;
 
 
     public Terminal() {
@@ -59,6 +76,14 @@ public class Terminal {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Controller.setPID(0, 0, 0);
+            }
+        });
+        openXBeeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String port = serialCombo.getSelectedItem().toString();
+                XBeeDevice device = new XBeeDevice(port, 9600);
+                Controller.control(device, port);
             }
         });
     }

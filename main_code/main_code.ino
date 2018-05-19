@@ -13,7 +13,7 @@ const long BROADCAST_DELAY = 0;
 
 //Evil globals
 bool automaticLaunchDetected = false;
-int manualFlywheelOverride = 0; // -1: force off, 0: don't care, 1: force on
+
 
 //initialize the various classes
 Accelerometer* accelerometer = NULL;
@@ -26,12 +26,30 @@ Storage* storage = NULL;
 long lastLoopTime = 0;
 long lastBroadcast = 0;
 
-const int LED_PINS[] = {24, 25, 26};
-const char FILE_NAME[] = "out.txt";
+const int LED_PINS[] = {24, 25, 26}; //where are the leds
+const char FILE_NAME[] = "out.txt"; //file to write logs to
+
+//user-defined tracking info (defaults, can be overwritten by ground station)
+int trackingTargets[] = {180, 90, 0, 0, 0, 0}; //tracking programming, hardcoded to accept 6 values
+long trackingDelays[] = {2000, 1000, 1000, 0, 0, 0}; //tracking delays, hardcoded to accept 6 values
+
+bool forceUseGroundTrackingState = false;
+bool groundTrackingState = false;
+
+//PID information
 unsigned int P = 1000;
 unsigned int I = 0;
 unsigned int D = 0;
+double defaultPIDs[] = {0, 0, 0};
+
+//TODO: Remember what this does
 unsigned long transmission = 0;
+
+//internal tracking variables
+unsigned long timeStartedThisTrack = 0;
+int currentTrack = 0;
+bool everTracked = false;
+bool trackingComplete = false;
 
 void setup() {
     pinMode(24, OUTPUT);
@@ -61,19 +79,35 @@ void setup() {
 }
 
 void loop() {
+  long thisTime = millis();
   altimeter->tick();
   accelerometer->tick();
   gps->tick();
 
+  //grab the orientations
   int x_rot, y_rot, z_rot;
-
   x_rot = accelerometer->getOrientation(X_AXIS);
   y_rot = accelerometer->getOrientation(Y_AXIS);
   z_rot = accelerometer->getOrientation(Z_AXIS);
-  //if (automaticLaunchDetected) {
+
+  //determine whether or not we are tracking and decide tracking target
+  bool useTracking = ((forceUseGroundTrackingState && groundTrackingState) || (!forceUseGroundTrackingState && automaticLaunchDetected)) && !trackingComplete;
+  if (useTracking) {
+      pid->setDesiredX(trackingTargets[currentTrack]);
       pid->tick(x_rot);
-  //}
-  long thisTime = millis();
+      if (!everTracked) {
+          everTracked = false;
+          timeStartedThisTrack = thisTime;
+      }
+      if (thisTime - timeStartedThisTrack > trackingDelays[currentTrack]) {
+          timeStartedThisTrack = thisTime;
+          if (++currentTrack >= 6) trackingComplete = true;
+      }
+  } else {
+      pid->idleMotor();
+  }
+
+
 
   //do everything involving radio broadcast
   if (thisTime - lastBroadcast > BROADCAST_DELAY) { //so we don't kill the radios
@@ -88,19 +122,25 @@ void loop() {
   }
 
   //do everything involving the radio reciever
-  if (Serial2.available() >= 20) {
-      char* s = new char[20]{0};
-      for (int i = 0; i < 20; i++) {
+  const int WAIT_PACKET_CNT = 50;
+  if (Serial2.available() >= WAIT_PACKET_CNT) {
+      char* s = new char[WAIT_PACKET_CNT]{0};
+      for (int i = 0; i < WAIT_PACKET_CNT; i++) {
           s[i] = Serial2.read();
       }
       Serial2.flush();
       bool pb = false, ib = false, db = false;
-      for (int j = 0; j < 20 - 2; j++) {
-          Serial.println("Oh hey xf");
+      bool usingGSPID = false;
+      for (int j = 0; j < WAIT_PACKET_CNT - 2; j++) {
           if (s[j] == 'N' && s[j+1] == 'U') {
-              Serial.println("Oh hey");
-              for (int i = 0; i < 20 - 2; i++) {
-                  if (s[i] == 'P' && s[i + 1] == '/') {
+              for (int i = 0; i < WAIT_PACKET_CNT - 2; i++) {
+                  if (s[i] == 'p' && s[i + 1] == '/') {
+                      usingGSPID = s[i + 2];
+                  } else if (s[i] == 'f' && s[i + 1] == '/') {
+                      forceUseGroundTrackingState = s[i + 2];
+                  } else if (s[i] == 's' && s[i + 1] == '/') {
+                      groundTrackingState = s[i + 2];
+                  } else if (s[i] == 'P' && s[i + 1] == '/') {
                       P = 0;
                       for (int n = 0; n < 2; n++) {
                           P = (P << 8) + s[i + 2 + n];
@@ -124,9 +164,22 @@ void loop() {
                   }
               }
               break;
+          } else if (s[j] == 'N' && s[j+1] == 'X') {
+              for (int i = 0; i < WAIT_PACKET_CNT - 2; i++) {
+                if (s[i] == 'a') {
+                    for (int k = 0; k < 6; k++) {
+                        trackingTargets[k] = s[i + 1 + k];
+                    }
+                } else if (s[i] == 'i') {
+                    for (int k = 0; k < 6; k++) {
+                        trackingDelays[k] = s[i + 1 + k];
+                    }
+                }
+              }
           }
       }
-      pid->setPID(P/1000.0, I/1000.0, D/1000.0);
+      if (usingGSPID) pid->setPID(P/1000.0, I/1000.0, D/1000.0);
+      else pid->setPID(defaultPIDs[0], defaultPIDs[1], defaultPIDs[2]);
       delete[] s;
   }
 

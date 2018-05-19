@@ -18,5 +18,6 @@ namespace nustars {
         int getDesiredX() const;
         void setPID(double p, double i, double d);
         double getP();
+        void idleMotor();
     };
 }
