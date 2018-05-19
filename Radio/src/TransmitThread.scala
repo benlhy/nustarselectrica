@@ -9,8 +9,8 @@ object TransmitThread extends Thread {
   override def run(): Unit = {
     Controller.say("Transmission thread is online")
     while (true) {
+      Thread.sleep(50)
       try {
-        Thread.sleep(50)
         val lst: ListBuffer[Byte] = new ListBuffer[Byte]
         lst += 'N' += 'U' += ' ' //carrier code
         lst += 'p' += '/' += {
@@ -38,7 +38,7 @@ object TransmitThread extends Thread {
         }
       } catch {
         case e: InterfaceNotOpenException => Controller.say("Connection to XBee lost! You may need to restart the program.")
-        case e: Exception => Controller.say("Unexpected exception in transmit thread: " + e)
+        //case e: Exception => Controller.say("Unexpected exception in transmit thread: " + e)
       }
     }
   }

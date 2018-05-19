@@ -114,8 +114,9 @@ object Controller extends JFrame {
   val trm = new Terminal
   var device: XBeeDevice = _
 
-  def control(device: XBeeDevice, port: String): Unit = {
+  def control(localdevice: XBeeDevice, port: String): Unit = {
     try {
+      device = localdevice
       device.open()
       trm.serialCombo.setEnabled(false)
       trm.openXBeeButton.setEnabled(false)
@@ -123,12 +124,14 @@ object Controller extends JFrame {
       device.addDataListener(DataListener)
       TransmitThread.start()
       while (true) {
-        Thread.sleep(50)
+        Controller.say("Oh hey")
         for (i <- data.indices) {
           val thisMsg = parseMsg(labels(i))
           if (!thisMsg.equals("N/A")) data(i) = thisMsg
         }
+        Controller.say("hey")
         trm.updateUI()
+        window.repaint()
       }
     } catch {
       case e: InvalidInterfaceException => say("COULD NOT INITIALIZE XBEE: XBee not found on " + port)
