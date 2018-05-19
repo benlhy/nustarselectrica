@@ -24,10 +24,12 @@ object Controller extends JFrame {
   Tn: Transmisison number
    */
   val labels: List[String] = List("T", "X", "Y", "Z", "Tr", "Ln", "Lt", "Lp", "A", "Tn")
-  var data: ListBuffer[String] = ListBuffer.fill(labels.length) {"N/A"}
+  val data: ListBuffer[String] = ListBuffer.fill(labels.length) {"N/A"}
 
-  var trackingTargets: Array[Int] = Array.fill(6){0}
-  var trackingTimes: Array[Int] = Array.fill(6){0}
+  val trackingTargets: ListBuffer[Int] = ListBuffer.fill(6){0}
+  val trackingTimes: ListBuffer[Int] = ListBuffer.fill(6){0}
+  trackingTargets(2) = 20
+  System.out.println(trackingTargets(2).toString)
 
   //the pid values which will be updated by the receiver
   private var _p: Int = 0

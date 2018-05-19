@@ -15,8 +15,8 @@
       <file leaf-file-name="Controller.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Controller.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1887">
-              <caret line="129" column="21" selection-start-line="129" selection-start-column="21" selection-end-line="129" selection-end-column="21" />
+            <state relative-caret-position="374">
+              <caret line="28" column="62" selection-start-line="28" selection-start-column="62" selection-end-line="28" selection-end-column="62" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -27,8 +27,12 @@
       <file leaf-file-name="Terminal.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Terminal.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="51" column="10" selection-start-line="51" selection-start-column="10" selection-end-line="51" selection-end-column="10" />
+            <state relative-caret-position="748">
+              <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
+              <folding>
+                <element signature="e#3171#3172#0" expanded="true" />
+                <element signature="e#3243#3244#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -36,8 +40,8 @@
       <file leaf-file-name="TransmitThread.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="55" column="50" lean-forward="true" selection-start-line="55" selection-start-column="50" selection-end-line="55" selection-end-column="50" />
+            <state relative-caret-position="102">
+              <caret line="93" column="5" lean-forward="true" selection-start-line="93" selection-start-column="5" selection-end-line="93" selection-end-column="5" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -48,7 +52,7 @@
       <file leaf-file-name="Container.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Container.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
+            <state relative-caret-position="85">
               <caret line="5" selection-start-line="5" selection-end-line="5" />
             </state>
           </provider>
@@ -63,6 +67,14 @@
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>getInteger</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>parseInt</replace>
+    </replaceStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -80,9 +92,9 @@
         <option value="$PROJECT_DIR$/src/DeviceContainer.scala" />
         <option value="$PROJECT_DIR$/src/Initializer.scala" />
         <option value="$PROJECT_DIR$/src/Terminal.form" />
-        <option value="$PROJECT_DIR$/src/Controller.scala" />
         <option value="$PROJECT_DIR$/src/Container.scala" />
         <option value="$PROJECT_DIR$/src/Terminal.java" />
+        <option value="$PROJECT_DIR$/src/Controller.scala" />
         <option value="$PROJECT_DIR$/src/TransmitThread.scala" />
       </list>
     </option>
@@ -97,8 +109,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="126" />
-    <option name="y" value="-21" />
+    <option name="x" value="675" />
+    <option name="y" value="-17" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
   </component>
@@ -107,9 +119,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -120,45 +129,15 @@
             <path>
               <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
               <item name="Radio" type="462c0819:PsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Radio" type="462c0819:PsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-              <item name="native" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Radio" type="462c0819:PsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-              <item name="native" type="462c0819:PsiDirectoryNode" />
-              <item name="Mac_OS_X" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Radio" type="462c0819:PsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-              <item name="native" type="462c0819:PsiDirectoryNode" />
-              <item name="Windows" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Radio" type="462c0819:PsiDirectoryNode" />
-              <item name="libs" type="462c0819:PsiDirectoryNode" />
-              <item name="native" type="462c0819:PsiDirectoryNode" />
-              <item name="Windows" type="462c0819:PsiDirectoryNode" />
-              <item name="win64" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="FoundationGUI" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Radio" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -279,12 +258,13 @@
       <workItem from="1526519018412" duration="2021000" />
       <workItem from="1526683038249" duration="7219000" />
       <workItem from="1526697120893" duration="2330000" />
-      <workItem from="1526700447353" duration="1529000" />
+      <workItem from="1526700447353" duration="5823000" />
+      <workItem from="1526738595849" duration="284000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="51060000" />
+    <option name="totallyTimeSpent" value="55638000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -292,14 +272,15 @@
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="11" weight="0.3180272" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info id="Image Layers" order="2" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5003903" side_tool="true" visible="true" weight="0.335034" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.5019516" side_tool="true" visible="true" weight="0.335034" />
       <window_info anchor="right" id="Maven Projects" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="10" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49960968" weight="0.335034" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4980484" visible="true" weight="0.335034" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Capture Tool" order="6" />
       <window_info id="Designer" order="3" />
@@ -317,7 +298,6 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.3180272" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -327,10 +307,13 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Terminal.java">
+    <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1547">
-          <caret line="91" selection-start-line="91" selection-end-line="91" />
+        <state relative-caret-position="1615">
+          <caret line="95" column="70" lean-forward="true" selection-start-line="95" selection-start-column="70" selection-end-line="95" selection-end-column="70" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -556,15 +539,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Container.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
+        <state relative-caret-position="85">
           <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Controller.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1887">
-          <caret line="129" column="21" selection-start-line="129" selection-start-column="21" selection-end-line="129" selection-end-column="21" />
+        <state relative-caret-position="374">
+          <caret line="28" column="62" selection-start-line="28" selection-start-column="62" selection-end-line="28" selection-end-column="62" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
@@ -573,15 +556,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Terminal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="51" column="10" selection-start-line="51" selection-start-column="10" selection-end-line="51" selection-end-column="10" />
+        <state relative-caret-position="748">
+          <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
+          <folding>
+            <element signature="e#3171#3172#0" expanded="true" />
+            <element signature="e#3243#3244#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TransmitThread.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="55" column="50" lean-forward="true" selection-start-line="55" selection-start-column="50" selection-end-line="55" selection-end-column="50" />
+        <state relative-caret-position="102">
+          <caret line="93" column="5" lean-forward="true" selection-start-line="93" selection-start-column="5" selection-end-line="93" selection-end-column="5" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>

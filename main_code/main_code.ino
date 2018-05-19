@@ -31,7 +31,7 @@ const char FILE_NAME[] = "out.txt"; //file to write logs to
 
 //user-defined tracking info (defaults, can be overwritten by ground station)
 int trackingTargets[] = {180, 90, 0, 0, 0, 0}; //tracking programming, hardcoded to accept 6 values
-long trackingDelays[] = {10000, 1000, 1000, 0, 0, 0}; //tracking delays, hardcoded to accept 6 values
+int trackingDelays[] = {10000, 1000, 1000, 0, 0, 0}; //tracking delays, hardcoded to accept 6 values
 
 bool forceUseGroundTrackingState = false;
 bool groundTrackingState = false;
@@ -93,6 +93,7 @@ void loop() {
   //determine whether or not we are tracking and decide tracking target
   bool useTracking = ((forceUseGroundTrackingState && groundTrackingState) || (!forceUseGroundTrackingState && automaticLaunchDetected)) && !trackingComplete;
   if (useTracking) {
+      Serial.printf("%d\n", trackingDelays[currentTrack]);
       pid->setDesiredX(trackingTargets[currentTrack]);
       pid->tick(x_rot);
       if (!everTracked) {
@@ -100,6 +101,7 @@ void loop() {
           timeStartedThisTrack = thisTime;
       }
       if (thisTime - timeStartedThisTrack > trackingDelays[currentTrack]) {
+          Serial.printf("%s%d\n", "tracked time was: ", (int)(thisTime - timeStartedThisTrack));
           timeStartedThisTrack = thisTime;
           currentTrack++;
           if (currentTrack >= 6) trackingComplete = true;
@@ -116,7 +118,6 @@ void loop() {
       sprintf(msg, "NU T:%lu/X:%f/Y:%d/Z:%d/Tr:%d/Ln:%f/Lt:%f/Lp:%lu/A:%d/Tn:%lu\n",
               thisTime, pid->getP(), y_rot, z_rot, pid->getDesiredX(), gps->getLng(),
               gps->getLat(), (thisTime - lastLoopTime), altimeter->getAltitude(), ++transmission);
-      //Serial.println(msg);
       Serial2.printf(msg);
       storage->write(msg);
       delete msg;
@@ -168,16 +169,21 @@ void loop() {
           } else if (s[j] == 'N' && s[j+1] == 'X') {
               for (int i = 0; i < WAIT_PACKET_CNT - 6; i++) {
                 if (s[i] == 'a') {
-                    Serial.println("Here i am");
                     for (int k = 0; k < 6; k++) {
-                        trackingTargets[k] = s[i + 1 + k];
+                        trackingTargets[k + 1 + i] = 0;
+                        for (int n = 0; n < 2; n++) {
+                            trackingTargets[k + 1 + i + n] =
+                                    (trackingTargets[k + 1 + i + n] << 8) + s[i + 2 + n + k];
+                        }
                     }
                 } else if (s[i] == 'i') {
                     for (int k = 0; k < 6; k++) {
-                        Serial.println("This is debugging.");
-                        trackingDelays[k] = s[i + 1 + k];
-                        Serial.println("Array has been updated (?).");
-                        Serial.println((int)s[i+1+k]);
+                        trackingDelays[k + 1 + i] = 0;
+                        for (int n = 0; n < 2; n++) {
+                            trackingDelays[k + 1 + i + n] =
+                                    (trackingDelays[k + 1 + i + n] << 8) + s[i + 2 + n + k];
+                            Serial.printf("%s%d\n", "I got: ", trackingDelays[k + n + i + 1]);
+                        }
                     }
                 }
               }

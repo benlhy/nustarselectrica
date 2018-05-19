@@ -45,20 +45,20 @@ object TransmitThread extends Thread {
 
   def sendTrackingImperatives(): Unit = {
     try {
-      Controller.trackingTargets(0) = Integer.getInteger(Controller.trm.target0.getText())
-      Controller.trackingTargets(1) = Integer.getInteger(Controller.trm.target1.getText())
-      Controller.trackingTargets(2) = Integer.getInteger(Controller.trm.target2.getText())
-      Controller.trackingTargets(3) = Integer.getInteger(Controller.trm.target3.getText())
-      Controller.trackingTargets(4) = Integer.getInteger(Controller.trm.target4.getText())
-      Controller.trackingTargets(5) = Integer.getInteger(Controller.trm.target5.getText())
-      Controller.trackingTimes(0) = Integer.getInteger(Controller.trm.time0.getText())
-      Controller.trackingTimes(1) = Integer.getInteger(Controller.trm.time1.getText())
-      Controller.trackingTimes(2) = Integer.getInteger(Controller.trm.time2.getText())
-      Controller.trackingTimes(3) = Integer.getInteger(Controller.trm.time3.getText())
-      Controller.trackingTimes(4) = Integer.getInteger(Controller.trm.time4.getText())
-      Controller.trackingTimes(5) = Integer.getInteger(Controller.trm.time5.getText())
+      Controller.trackingTargets(0) = Integer.parseInt(Controller.trm.target0.getText())
+      Controller.trackingTargets(1) = Integer.parseInt(Controller.trm.target1.getText())
+      Controller.trackingTargets(2) = Integer.parseInt(Controller.trm.target2.getText())
+      Controller.trackingTargets(3) = Integer.parseInt(Controller.trm.target3.getText())
+      Controller.trackingTargets(4) = Integer.parseInt(Controller.trm.target4.getText())
+      Controller.trackingTargets(5) = Integer.parseInt(Controller.trm.target5.getText())
+      Controller.trackingTimes(0) = Integer.parseInt(Controller.trm.time0.getText())
+      Controller.trackingTimes(1) = Integer.parseInt(Controller.trm.time1.getText())
+      Controller.trackingTimes(2) = Integer.parseInt(Controller.trm.time2.getText())
+      Controller.trackingTimes(3) = Integer.parseInt(Controller.trm.time3.getText())
+      Controller.trackingTimes(4) = Integer.parseInt(Controller.trm.time4.getText())
+      Controller.trackingTimes(5) = Integer.parseInt(Controller.trm.time5.getText())
     } catch {
-      case e: Exception => Controller.say("shit")
+      case e: Exception => Controller.say("Invalid tracking input!")
     }
 
     Controller.say("Sending tracking instructions.")
@@ -70,11 +70,15 @@ object TransmitThread extends Thread {
         lst += 'N' += 'X' += ' ' //special carrier code
         lst += 'a'
         for (i <- 0 until 6) {
-          lst += (Controller.trackingTargets(i) & 0xFF).asInstanceOf[Byte]
+          val k = Controller.trackingTargets(i)
+          lst += ((k >> 8) & 0xFF).asInstanceOf[Byte]
+          lst += (k & 0xFF).asInstanceOf[Byte]
         }
         lst += 'i'
         for (i <- 0 until 6) {
-          lst += (Controller.trackingTimes(i) & 0xFF).asInstanceOf[Byte]
+          val k = Controller.trackingTimes(i)
+          lst += ((k >> 8) & 0xFF).asInstanceOf[Byte]
+          lst += (k & 0xFF).asInstanceOf[Byte]
         }
         try {
           Controller.device.sendBroadcastData(lst.toArray)
