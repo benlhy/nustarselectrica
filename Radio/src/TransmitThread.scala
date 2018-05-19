@@ -44,6 +44,23 @@ object TransmitThread extends Thread {
   }
 
   def sendTrackingImperatives(): Unit = {
+    try {
+      Controller.trackingTargets(0) = Integer.getInteger(Controller.trm.target0.getText())
+      Controller.trackingTargets(1) = Integer.getInteger(Controller.trm.target1.getText())
+      Controller.trackingTargets(2) = Integer.getInteger(Controller.trm.target2.getText())
+      Controller.trackingTargets(3) = Integer.getInteger(Controller.trm.target3.getText())
+      Controller.trackingTargets(4) = Integer.getInteger(Controller.trm.target4.getText())
+      Controller.trackingTargets(5) = Integer.getInteger(Controller.trm.target5.getText())
+      Controller.trackingTimes(0) = Integer.getInteger(Controller.trm.time0.getText())
+      Controller.trackingTimes(1) = Integer.getInteger(Controller.trm.time1.getText())
+      Controller.trackingTimes(2) = Integer.getInteger(Controller.trm.time2.getText())
+      Controller.trackingTimes(3) = Integer.getInteger(Controller.trm.time3.getText())
+      Controller.trackingTimes(4) = Integer.getInteger(Controller.trm.time4.getText())
+      Controller.trackingTimes(5) = Integer.getInteger(Controller.trm.time5.getText())
+    } catch {
+      case e: Exception => Controller.say("shit")
+    }
+
     Controller.say("Sending tracking instructions.")
     var trackingAlwaysFailed = true
     for (i <- 0 to 20) {
@@ -64,7 +81,7 @@ object TransmitThread extends Thread {
           Controller.transmissionSuccesses += 1
           trackingAlwaysFailed = false
         } catch {
-          case e: TimeoutException =>Controller.transmissionFailures += 1
+          case e: TimeoutException => Controller.transmissionFailures += 1
         }
       } catch {
         case e: InterfaceNotOpenException => Controller.say("Connection to XBee lost! You may need to restart the program.")

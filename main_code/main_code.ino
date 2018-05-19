@@ -31,7 +31,7 @@ const char FILE_NAME[] = "out.txt"; //file to write logs to
 
 //user-defined tracking info (defaults, can be overwritten by ground station)
 int trackingTargets[] = {180, 90, 0, 0, 0, 0}; //tracking programming, hardcoded to accept 6 values
-long trackingDelays[] = {2000, 1000, 1000, 0, 0, 0}; //tracking delays, hardcoded to accept 6 values
+long trackingDelays[] = {10000, 1000, 1000, 0, 0, 0}; //tracking delays, hardcoded to accept 6 values
 
 bool forceUseGroundTrackingState = false;
 bool groundTrackingState = false;
@@ -96,12 +96,13 @@ void loop() {
       pid->setDesiredX(trackingTargets[currentTrack]);
       pid->tick(x_rot);
       if (!everTracked) {
-          everTracked = false;
+          everTracked = true;
           timeStartedThisTrack = thisTime;
       }
       if (thisTime - timeStartedThisTrack > trackingDelays[currentTrack]) {
           timeStartedThisTrack = thisTime;
-          if (++currentTrack >= 6) trackingComplete = true;
+          currentTrack++;
+          if (currentTrack >= 6) trackingComplete = true;
       }
   } else {
       pid->idleMotor();
@@ -165,14 +166,18 @@ void loop() {
               }
               break;
           } else if (s[j] == 'N' && s[j+1] == 'X') {
-              for (int i = 0; i < WAIT_PACKET_CNT - 2; i++) {
+              for (int i = 0; i < WAIT_PACKET_CNT - 6; i++) {
                 if (s[i] == 'a') {
+                    Serial.println("Here i am");
                     for (int k = 0; k < 6; k++) {
                         trackingTargets[k] = s[i + 1 + k];
                     }
                 } else if (s[i] == 'i') {
                     for (int k = 0; k < 6; k++) {
+                        Serial.println("This is debugging.");
                         trackingDelays[k] = s[i + 1 + k];
+                        Serial.println("Array has been updated (?).");
+                        Serial.println((int)s[i+1+k]);
                     }
                 }
               }
