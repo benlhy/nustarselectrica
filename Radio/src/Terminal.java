@@ -86,6 +86,12 @@ public class Terminal {
                 Controller.control(device, port);
             }
         });
+        sendTrackingButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TransmitThread.sendTrackingImperatives();
+            }
+        });
     }
 
     public void updateUI() {
