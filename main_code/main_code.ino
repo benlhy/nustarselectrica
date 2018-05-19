@@ -15,6 +15,7 @@ const long BROADCAST_DELAY = 0;
 bool automaticLaunchDetected = false;
 bool zeroAccelerationDetected = false;
 bool usingGroundAutoLaunch = true;
+long timeDetectedStartCondition = LONG_MAX;
 
 
 //initialize the various classes
@@ -93,9 +94,16 @@ void loop() {
     z_rot = accelerometer->getOrientation(Z_AXIS);
 
     //determine whether or not we are tracking and decide tracking target
-    bool useTracking = ((forceUseGroundTrackingState && groundTrackingState) || (!forceUseGroundTrackingState && automaticLaunchDetected)) && !trackingComplete;
-    useTracking = useTracking && ((automaticLaunchDetected && usingGroundAutoLaunch) || (zeroAccelerationDetected && !usingGroundAutoLaunch));
-    if (useTracking) {
+
+	bool trackingDetected = (forceUseGroundTrackingState && groundTrackingState) || ((!forceUseGroundTrackingState && automaticLaunchDetected && usingGroundAutoLaunch) || (!forceUseGroundTrackingState && zeroAccelerationDetected && !usingGroundAutoLaunch);
+
+	//register detection of launch conditions
+	//separate lines because I can
+	if (!everTracked && trackingDetected) {
+		timeDetectedStartCondition = thisTime;
+	}
+
+	if (trackingDetected && (thisTime - timeDetectedStartCondition > 3000) && !trackingComplete) {
         Serial.printf("%d\n", trackingDelays[currentTrack]);
         pid->setDesiredX(trackingTargets[currentTrack]);
         pid->tick(x_rot);
