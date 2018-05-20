@@ -23,7 +23,7 @@ object Controller extends JFrame {
   A: Altitude
   Tn: Transmisison number
    */
-  val labels: List[String] = List("T", "X", "Y", "Z", "Tr", "Ln", "Lt", "Lp", "A", "Tn")
+  val labels: List[String] = List("T", "X", "Y", "Z", "Tr", "Ln", "Lt", "Lp", "A", "Tn", "R")
   val data: ListBuffer[String] = ListBuffer.fill(labels.length) {"N/A"}
 
   val trackingTargets: ListBuffer[Int] = ListBuffer.fill(6){0}
@@ -62,6 +62,9 @@ object Controller extends JFrame {
     _d = d
   }
 
+  var _challenge: Int = 0
+  def challenge: Int = _challenge
+  def setChallenge (x: Int): Unit = {_challenge = x}
   private var _transmissionSuccesses = 0
 
   def transmissionSuccesses: Int = _transmissionSuccesses

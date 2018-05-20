@@ -52,6 +52,10 @@ public class Terminal {
     public JButton sendTrackingButton;
     public JCheckBox forceOverrideTrackingCheckBox;
     public JCheckBox trackingCheckBox;
+    private JLabel tickNumber;
+    private JTextField challenge;
+    private JLabel response;
+    private JButton sendChallenge;
 
 
     public Terminal() {
@@ -92,6 +96,16 @@ public class Terminal {
                 TransmitThread.sendTrackingImperatives();
             }
         });
+        sendChallenge.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Controller.setChallenge(Integer.parseInt(challenge.getText()));
+                } catch (Exception ex) {
+                    Controller.say("Invalid challenge!");
+                }
+            }
+        });
     }
 
     public void updateUI() {
@@ -105,7 +119,8 @@ public class Terminal {
         latitude.setText(Controller.getData(6));
         loopDelay.setText(Controller.getData(7));
         altitude.setText(Controller.getData(8));
+        tickNumber.setText(Controller.getData(9));
         transmissionRatio.setText(String.format("%s%.2f", "Transmission fail ratio: ", (double)Controller.transmissionFailures()/(Controller.transmissionSuccesses()+Controller.transmissionFailures())));
-
+        response.setText(Controller.getData(10));
     }
 }

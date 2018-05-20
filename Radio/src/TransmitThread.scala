@@ -27,9 +27,11 @@ object TransmitThread extends Thread {
         }
         if (Controller.trm.useGroundPIDCheckBox.isSelected) {
           lst += 'P' += '/' += ((Controller.p >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.p & 0xFF).asInstanceOf[Byte] //PID values
+          //lst += 'P' += '/' += 0x00 += 0x01
           lst += 'I' += '/' += ((Controller.i >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.i & 0xFF).asInstanceOf[Byte]
           lst += 'D' += '/' += ((Controller.d >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.d & 0xFF).asInstanceOf[Byte]
         }
+        lst += 'C' += '/' += ((Controller.challenge >> 8) & 0xFF).asInstanceOf[Byte] += (Controller.challenge & 0xFF).asInstanceOf[Byte]
         try {
           Controller.device.sendBroadcastData(lst.toArray)
           Controller.transmissionSuccesses += 1
